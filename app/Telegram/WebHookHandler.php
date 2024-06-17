@@ -26,12 +26,7 @@ class WebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
 //    }
     public function start(): void
     {
-        $this->chat->markdown('Hello! and welcome to Zua Chapaa')->send();
-        $this->chat->keyboard(Keyboard::make()->buttons([
-            Button::make('open')->url('https://test.it'),
-            Button::make('Web App')->webApp('https://web-app.test.it'),
-            Button::make('Login Url')->loginUrl('https://loginUrl.test.it'),
-        ]))->send();
+        Log::info($this->chat);
     }
 
     public function test(): void
