@@ -26,17 +26,12 @@ class WebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
 //    }
     public function start(): void
     {
-        $this->chat->markdown('Hello! and welcome to Zua Chapaa')->send();
-        Telegraph::message('hello world')
-            ->keyboard(Keyboard::make()->buttons([
-                Button::make('English')->action('set_language_to_eng'),
-                Button::make('Swahili')->action('set_language_to_swahili'),
-            ])->chunk(2))->send();
+        Telegraph::message('hello world')->send();
+//        $this->chat->markdown('Hello! and welcome to Zua Chapaa')->send();
     }
 
     public function test(): void
     {
-
 
     }
 
@@ -51,6 +46,6 @@ class WebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
 
         report($throwable);
 
-        $this->reply('sorry man, I failed');
+        $this->reply('Failed...');
     }
 }
