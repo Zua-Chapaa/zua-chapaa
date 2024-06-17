@@ -24,6 +24,7 @@ class WebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
     public function start(): void
     {
         $this->chat->markdown('Hello! and welcome to Zua Chapaa')->send();
+        $this->chat->markdown('Please choose your language')->send();
     }
 
     public function hi(): void
