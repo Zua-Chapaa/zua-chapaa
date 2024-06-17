@@ -2,14 +2,8 @@
 
 namespace App\Telegram;
 
-use DefStudio\Telegraph\Facades\Telegraph;
-use DefStudio\Telegraph\Keyboard\Button;
-use DefStudio\Telegraph\Keyboard\Keyboard;
-use DefStudio\Telegraph\Models\TelegraphBot;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use PHPUnit\Event\Code\Throwable;
-use Stringable;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class WebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
