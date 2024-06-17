@@ -2,6 +2,9 @@
 
 namespace App\Telegram;
 
+use DefStudio\Telegraph\Facades\Telegraph;
+use DefStudio\Telegraph\Keyboard\Button;
+use DefStudio\Telegraph\Keyboard\Keyboard;
 use DefStudio\Telegraph\Models\TelegraphBot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -24,12 +27,17 @@ class WebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
     public function start(): void
     {
         $this->chat->markdown('Hello! and welcome to Zua Chapaa')->send();
-        $this->chat->markdown('Please choose your language')->send();
+        Telegraph::message('hello world')
+            ->keyboard(Keyboard::make()->buttons([
+                Button::make('English')->action('set_language_to_eng'),
+                Button::make('Swahili')->action('set_language_to_swahili'),
+            ])->chunk(2))->send();
     }
 
-    public function hi(): void
+    public function test(): void
     {
-        $this->chat->markdown('*Hi* happy to be here!')->send();
+
+
     }
 
     /**
