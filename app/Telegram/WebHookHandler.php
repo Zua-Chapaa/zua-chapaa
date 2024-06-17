@@ -20,7 +20,7 @@ class WebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
 //    }
     public function start(): void
     {
-        Log::info($this->chat);
+        Log::info("active");
     }
 
     public function test(): void
