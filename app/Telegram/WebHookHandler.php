@@ -21,6 +21,10 @@ class WebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
 //        // in this example, a received message is sent back to the chat
 //        $this->chat->html("Received: $text")->send();
 //    }
+    public function start(): void
+    {
+        $this->chat->markdown('Hello! and welcome to Zua Chapaa')->send();
+    }
 
     public function hi(): void
     {
