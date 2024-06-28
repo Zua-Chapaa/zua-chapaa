@@ -2,6 +2,8 @@
 
 namespace App\Telegram\CallBacks;
 
+use DefStudio\Telegraph\Keyboard\Button;
+use DefStudio\Telegraph\Keyboard\Keyboard;
 use Illuminate\Support\Facades\Log;
 
 trait HandleChatMessage
@@ -37,32 +39,36 @@ trait HandleChatMessage
 
     private function goToHome()
     {
-        
+        $this->getChat()->message('Select a plan to proceed')
+            ->keyboard(Keyboard::make()->row([
+                Button::make('Hourly Plan @Ksh 100')->action('select_plan')->param('plan', 'hourly'),
+                Button::make('Day Plan @Ksh 1500')->action('select_plan')->param('plan', 'daily'),
+            ]))->send();
     }
 
     private function goToLeadersBoard()
     {
-        
+
     }
 
     private function goToAbout()
     {
-        
+
     }
 
     private function checkBalance()
     {
-        
+
     }
 
     private function viewAccount()
     {
-        
+
     }
 
     private function viewFAQ()
     {
-        
+
     }
 
     private function defaultResponse()

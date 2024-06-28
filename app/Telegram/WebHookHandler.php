@@ -2,6 +2,7 @@
 
 namespace App\Telegram;
 
+use App\Telegram\CallBacks\Start;
 use DefStudio\Telegraph\Keyboard\Button;
 use DefStudio\Telegraph\Keyboard\Keyboard;
 use DefStudio\Telegraph\Keyboard\ReplyButton;
@@ -11,30 +12,15 @@ use Illuminate\Support\Facades\Log;
 use PHPUnit\Event\Code\Throwable;
 use Stringable;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use App\Telegram\CallBacks\HandleChatMessage;
 
 class WebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
 {
-    public function start($chat): void
-    {
-        $this->getChat()->message('Please choose your language')
-            ->keyboard(Keyboard::make()->row([
-                Button::make('English')->action('select_language')->param('lang', 'English'),
-                Button::make('Swahili')->action('select_language')->param('lang', 'Swahili'),
-            ]))->send();
-    }
-
-    public function handleChatMessage($text): void
-    {
-        $chat = $this->getChat();
-
-        $chat->message($text)->send();
-    }
+    use HandleChatMessage;
+    use Start;
 
 
-    public function goToLeadersBoard()
-    {
 
-    }
 
     public function select_language(): void
     {
@@ -56,59 +42,8 @@ class WebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
             )->send();
     }
 
-    public function goToHome(): void
-    {
-        $chat = $this->getChat();
 
-        $chat->message('Select a plan to proceed')
-            ->keyboard(Keyboard::make()->row([
-                Button::make('Hourly Plan @Ksh 100')->action('select_plan')->param('plan', 'hourly'),
-                Button::make('Day Plan @Ksh 1500')->action('select_plan')->param('plan', 'daily'),
-            ]))->send();
-    }
-
-    public function goToAbout()
-    {
-
-    }
-
-    public function checkBalance()
-    {
-    }
-
-
-    public function viewAccount()
-    {
-
-    }
-
-    public function viewFAQ()
-    {
-
-    }
-
-    public function defaultResponse()
-    {
-
-    }
-
-
-    public function switchContext()
-    {
-
-    }
-
-
-    //helpers
-    private function getChat()
-    {
-        return TelegraphChat::where('chat_id', $this->chat->chat_id)->first();
-    }
-
-
-
-    //errors
-
+    // errors
     /**
      * @throws \Throwable
      */
@@ -119,7 +54,7 @@ class WebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
         }
 
         report($throwable);
-
         $this->reply('Failed...');
     }
+
 }
