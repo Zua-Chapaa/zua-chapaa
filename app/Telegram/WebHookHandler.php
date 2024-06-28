@@ -14,41 +14,19 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class WebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
 {
-    public function handleChatMessage(Stringable $text): void
+    public function handleChatMessage($text): void
     {
+        $chat = $this->getChat();
 
-        Log::info($text);
-
-        switch ($text) {
-            case 'Home':
-                $this->goToHome();
-                break;
-            case 'Leaders Board':
-                $this->goToLeadersBoard();
-                break;
-            case 'About':
-                $this->goToAbout();
-                break;
-            case 'Balance':
-                $this->checkBalance();
-                break;
-            case 'Account':
-                $this->viewAccount();
-                break;
-            case 'FAQ':
-                $this->viewFAQ();
-                break;
-            default:
-                $this->defaultResponse();
-                break;
-        }
+        $chat->message($text)->send();
     }
 
     public function start(): void
     {
         $chat = $this->getChat();
 
-        $chat->message('Please choose your language')
+        $chat
+            ->message('Please choose your language')
             ->keyboard(Keyboard::make()->row([
                 Button::make('English')->action('select_language')->param('lang', 'English'),
                 Button::make('Swahili')->action('select_language')->param('lang', 'Swahili'),
@@ -56,7 +34,7 @@ class WebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
     }
 
     public function goToLeadersBoard(){
-        
+
     }
 
     public function select_language(): void
@@ -64,17 +42,19 @@ class WebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
         //get the language chosen
         $lang = $this->data->get('lang');
 
-        $this->getChat()
+        $this
+            ->getChat()
             ->message("You have selected $lang")
-            ->replyKeyboard(ReplyKeyboard::make()
-                ->buttons([
+            ->replyKeyboard(
+                ReplyKeyboard::make()->buttons([
                     ReplyButton::make('Home'),
                     ReplyButton::make('About'),
                     ReplyButton::make('Balance'),
                     ReplyButton::make('Account'),
                     ReplyButton::make('FAQ'),
-                    ReplyButton::make('Leaders Board')->webApp('https://tipsmoto.co.ke'),
-                ]))->send();
+                    ReplyButton::make('Leaders Board') ->webApp('https://tipsmoto.co.ke'),
+                ])
+            )->send();
     }
 
     public function goToHome(): void
@@ -95,8 +75,8 @@ class WebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
 
     public function checkBalance()
     {
-
     }
+
 
     public function viewAccount()
     {
