@@ -14,17 +14,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class WebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
 {
-    public function handleChatMessage($text): void
-    {
-        $chat = $this->getChat();
-
-        $chat->message($text)->send();
-    }
-
     public function start(): void
     {
         $chat = $this->getChat();
-
         $chat
             ->message('Please choose your language')
             ->keyboard(Keyboard::make()->row([
@@ -32,6 +24,14 @@ class WebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
                 Button::make('Swahili')->action('select_language')->param('lang', 'Swahili'),
             ]))->send();
     }
+
+    public function handleChatMessage($text): void
+    {
+        $chat = $this->getChat();
+
+        $chat->message($text)->send();
+    }
+
 
     public function goToLeadersBoard(){
 
