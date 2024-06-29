@@ -2,15 +2,11 @@
 
 namespace App\Telegram;
 
+use App\Telegram\CallBacks\Handler;
 use App\Telegram\CallBacks\Start;
-use DefStudio\Telegraph\Keyboard\Button;
-use DefStudio\Telegraph\Keyboard\Keyboard;
 use DefStudio\Telegraph\Keyboard\ReplyButton;
 use DefStudio\Telegraph\Keyboard\ReplyKeyboard;
-use DefStudio\Telegraph\Models\TelegraphChat;
-use Illuminate\Support\Facades\Log;
 use PHPUnit\Event\Code\Throwable;
-use Stringable;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Telegram\CallBacks\HandleChatMessage;
 
@@ -18,9 +14,7 @@ class WebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
 {
     use HandleChatMessage;
     use Start;
-
-
-
+    use Handler;
 
     public function select_language(): void
     {
@@ -28,7 +22,7 @@ class WebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
         $lang = $this->data->get('lang');
 
         $this
-            ->getChat()
+            ?->getChat()
             ->message("You have selected $lang")
             ->replyKeyboard(
                 ReplyKeyboard::make()->buttons([

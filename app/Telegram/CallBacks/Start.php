@@ -5,9 +5,6 @@ namespace App\Telegram\CallBacks;
 use DefStudio\Telegraph\Keyboard\Button;
 use DefStudio\Telegraph\Keyboard\Keyboard;
 
-/**
- * @method getChat()
- */
 trait Start
 {
     public function start($chat): void
