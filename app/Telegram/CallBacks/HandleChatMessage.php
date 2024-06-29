@@ -10,10 +10,10 @@ trait HandleChatMessage
 {
     public function __construct($text)
     {
-        $chat = $this->getChat();
-
-
-        $chat->message($text);
+        $chat = $this
+            ->getChat()
+            ->message("here")
+        ;
 
 
         switch ($text) {
