@@ -4,6 +4,8 @@ namespace App\Telegram\CallBacks;
 
 use DefStudio\Telegraph\Keyboard\Button;
 use DefStudio\Telegraph\Keyboard\Keyboard;
+use DefStudio\Telegraph\Keyboard\ReplyButton;
+use DefStudio\Telegraph\Keyboard\ReplyKeyboard;
 
 trait Start
 {
@@ -14,5 +16,25 @@ trait Start
                 Button::make('English')->action('select_language')->param('lang', 'English'),
                 Button::make('Swahili')->action('select_language')->param('lang', 'Swahili'),
             ]))->send();
+    }
+
+    public function select_language(): void
+    {
+        //get the language chosen
+        $lang = $this->data->get('lang');
+
+        $this
+            ?->getChat()
+            ->message("You have selected $lang")
+            ->replyKeyboard(
+                ReplyKeyboard::make()->buttons([
+                    ReplyButton::make('Home'),
+                    ReplyButton::make('About'),
+                    ReplyButton::make('Balance'),
+                    ReplyButton::make('Account'),
+                    ReplyButton::make('FAQ'),
+                    ReplyButton::make('Leaders Board')->webApp('https://tipsmoto.co.ke'),
+                ])
+            )->send();
     }
 }
