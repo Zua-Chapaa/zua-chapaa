@@ -10,7 +10,11 @@ trait HandleChatMessage
 {
     public function __construct($text)
     {
-        Log::info($text);
+        $chat = $this->getChat();
+
+
+        $chat->message($text);
+
 
         switch ($text) {
             case 'Home':
