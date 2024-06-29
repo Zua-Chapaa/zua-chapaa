@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 
 trait Start
 {
-    public function start(): void
+    public function __construct()
     {
         Log::info("here");
 
