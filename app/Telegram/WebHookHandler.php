@@ -7,24 +7,21 @@ use App\Telegram\CallBacks\TelegramHandler;
 use PHPUnit\Event\Code\Throwable;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Telegram\CallBacks\HandleChatMessage;
-use App\Telegram\CallBacks\TelegramHandler;
 
 class WebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
 {
-    use HandleChatMessage;
     use Start;
     use TelegramHandler;
+    use HandleChatMessage;
 
 
 
     /**
      * @throws \Throwable
      */
-    protected function onFailure(Throwable|\Throwable $throwable): void
+    public function onFailure(Throwable|\Throwable $throwable): void
     {
-        if ($throwable instanceof NotFoundHttpException) {
-            throw $throwable;
-        }
+        if ($throwable instanceof NotFoundHttpException) throw $throwable;
 
         report($throwable);
         $this->reply('Failed...');

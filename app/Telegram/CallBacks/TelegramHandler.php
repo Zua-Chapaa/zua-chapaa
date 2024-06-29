@@ -9,7 +9,7 @@ trait TelegramHandler
     /**
      * @return mixed
      */
-    private function getChat()
+    public function getChat(): mixed
     {
         return TelegraphChat::where('chat_id', $this->chat->chat_id)->first();
     }
