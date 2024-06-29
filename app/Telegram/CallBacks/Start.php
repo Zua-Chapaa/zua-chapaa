@@ -9,7 +9,7 @@ use DefStudio\Telegraph\Keyboard\ReplyKeyboard;
 
 trait Start
 {
-    public function start($chat): void
+    public function start(): void
     {
         $this->getChat()->message('Please choose your language')
             ->keyboard(Keyboard::make()->row([
@@ -30,9 +30,9 @@ trait Start
                 ReplyKeyboard::make()->buttons([
                     ReplyButton::make('Home'),
                     ReplyButton::make('About'),
-                    ReplyButton::make('Balance'),
-                    ReplyButton::make('Account'),
-                    ReplyButton::make('FAQ'),
+                    ReplyButton::make('Balance')->webApp('https://tipsmoto.co.ke'),
+                    ReplyButton::make('Account')->webApp('https://tipsmoto.co.ke'),
+                    ReplyButton::make('FAQ')->webApp('https://tipsmoto.co.ke'),
                     ReplyButton::make('Leaders Board')->webApp('https://tipsmoto.co.ke'),
                 ])
             )->send();
