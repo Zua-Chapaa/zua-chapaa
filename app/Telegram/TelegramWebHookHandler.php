@@ -20,6 +20,8 @@ class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandle
             ]))->send();
     }
 
+    //test
+
     function getChat()
     {
         return TelegraphChat::where('chat_id', $this->chat->chat_id)->first();
