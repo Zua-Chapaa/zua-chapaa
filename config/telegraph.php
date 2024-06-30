@@ -31,7 +31,7 @@ return [
          */
 //        'handler' => DefStudio\Telegraph\Handlers\EmptyWebhookHandler::class,
 
-        'handler' => \App\Telegram\WebHookHandler::class,
+        'handler' => \App\Telegram\TelegramWebHookHandler::class,
 
 
         /*
