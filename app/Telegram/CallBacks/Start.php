@@ -36,18 +36,16 @@ trait Start
                 ->message($this->build_chat($lang))
                 ->keyboard(Keyboard::make()
                     ->row([
-                        Button::make('Share Contact Information')->action('share_language')
+                        Button::make('Share Contact Information')->requestContact()
                     ]));
         }
 
         $build->send();
-
     }
 
-
-    public function share_language(): void
+    public function share_contact_info()
     {
-        Log::info("getting info");
+
     }
 
     public function build_chat($lang): string
