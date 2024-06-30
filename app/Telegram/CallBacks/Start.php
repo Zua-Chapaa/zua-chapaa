@@ -4,7 +4,6 @@ namespace App\Telegram\CallBacks;
 
 use DefStudio\Telegraph\Keyboard\Button;
 use DefStudio\Telegraph\Keyboard\Keyboard;
-
 use DefStudio\Telegraph\Keyboard\ReplyButton;
 use DefStudio\Telegraph\Keyboard\ReplyKeyboard;
 
@@ -12,7 +11,8 @@ use DefStudio\Telegraph\Keyboard\ReplyKeyboard;
 trait Start
 {
     use GetChat;
-    public function __construct()
+
+    public function start(): void
     {
         $this->getChat()->message('Please choose your language')
             ->keyboard(Keyboard::make()->row([
