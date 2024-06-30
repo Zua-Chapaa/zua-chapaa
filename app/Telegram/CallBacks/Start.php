@@ -25,14 +25,19 @@ trait Start
         //get the language chosen
         $lang = $this->data->get('lang');
 
-        $build = $this?->getChat()->message($this->build_chat($lang));
+        $build = null;
 
         if ($this->is_contact_available()) {
+            $build = $this?->getChat()
+                ->message($this->build_chat($lang));
             Log::info("contact exist");
         } else {
-            $build->keyboard(Keyboard::make()->row([
-                Button::make('Share Contact Information')->action('share_language')
-            ]));
+            $build = $this?->getChat()
+                ->message($this->build_chat($lang))
+                ->keyboard(Keyboard::make()
+                    ->row([
+                        Button::make('Share Contact Information')->action('share_language')
+                    ]));
         }
 
         $build->send();
