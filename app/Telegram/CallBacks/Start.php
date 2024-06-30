@@ -4,7 +4,8 @@ namespace App\Telegram\CallBacks;
 
 use DefStudio\Telegraph\Keyboard\Button;
 use DefStudio\Telegraph\Keyboard\Keyboard;
-use Illuminate\Support\Facades\Log;
+use DefStudio\Telegraph\Keyboard\ReplyButton;
+use DefStudio\Telegraph\Keyboard\ReplyKeyboard;
 
 
 trait Start
@@ -25,17 +26,18 @@ trait Start
         //get the language chosen
         $lang = $this->data->get('lang');
         $build = $this?->getChat()
-            ->message("You have selected $lang");
-
-        $contact_details = $this->is_contact_available();
-
+            ->message("You have selected $lang")
+            ->replyKeyboard(
+                ReplyKeyboard::make()->buttons([
+                    ReplyButton::make('Home'),
+                    ReplyButton::make('About'),
+                    ReplyButton::make('Balance')->webApp('https://tipsmoto.co.ke'),
+                    ReplyButton::make('Account')->webApp('https://tipsmoto.co.ke'),
+                    ReplyButton::make('FAQ')->webApp('https://tipsmoto.co.ke'),
+                    ReplyButton::make('Leaders Board')->webApp('https://tipsmoto.co.ke'),
+                ])
+            );
         $build->send();
-    }
-
-    public function is_contact_available(): bool
-    {
-        Log::info($this->getChat());
-        return false;
     }
 
 }
