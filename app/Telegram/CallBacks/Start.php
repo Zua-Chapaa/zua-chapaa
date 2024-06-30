@@ -27,15 +27,13 @@ trait Start
 
         $build = $this?->getChat()->message($this->build_chat($lang));
 
-        if ($this->is_contact_available()) {
-            $build->send();
-        } else {
+        if ($this->is_contact_available() === false) {
             $build->keyboard(Keyboard::make()->row([
-                Button::make('Share Language')
-                    ->action('share_language')
-            ]))->send();
+                Button::make('Share Contact Information')->action('share_language')
+            ]));
         }
 
+        $build->send();
 
     }
 
@@ -50,9 +48,7 @@ trait Start
         $string_one = "You have selected $lang";
         $string_two = "Please share your contact information to complete registration.";
 
-        $contact_exist = $this->is_contact_available();
-
-        if ($contact_exist) {
+        if ($this->is_contact_available()) {
             return $string_one;
         } else {
             return $string_one . "\n" . "\n" . $string_two;
