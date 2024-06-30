@@ -24,44 +24,17 @@ trait Start
     {
         //get the language chosen
         $lang = $this->data->get('lang');
+        $build = $this?->getChat()
+            ->message("You have selected $lang");
 
-        $build = null;
-
-        if ($this->is_contact_available()) {
-            $build = $this?->getChat()
-                ->message($this->build_chat($lang));
-            Log::info("contact exist");
-        } else {
-            $build = $this?->getChat()
-                ->message($this->build_chat($lang))
-                ->keyboard(Keyboard::make()
-                    ->row([
-                        Button::make('Share Contact Information')->requestContact()
-                    ]));
-        }
+        $contact_details = $this->is_contact_available();
 
         $build->send();
     }
 
-    public function share_contact_info()
-    {
-
-    }
-
-    public function build_chat($lang): string
-    {
-        $string_one = "You have selected $lang";
-        $string_two = "Please share your contact information to complete registration.";
-
-        if ($this->is_contact_available()) {
-            return $string_one;
-        } else {
-            return $string_one . "\n" . "\n" . $string_two;
-        }
-    }
-
     public function is_contact_available(): bool
     {
+        Log::info($this->getChat());
         return false;
     }
 
