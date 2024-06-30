@@ -4,11 +4,13 @@ namespace App\Telegram\CallBacks;
 
 use DefStudio\Telegraph\Keyboard\Button;
 use DefStudio\Telegraph\Keyboard\Keyboard;
+use Illuminate\Support\Stringable;
 
 trait HandleChatMessage
 {
     use GetChat;
-    public function __construct($text)
+
+    public function handleChatMessage(Stringable $text): void
     {
         $chat = $this->getChat()->message("here");
 
