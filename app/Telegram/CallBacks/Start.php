@@ -14,13 +14,7 @@ trait Start
 {
     public function __construct()
     {
-        Log::info("here");
 
-//        $this->getChat()->message('Please choose your language')
-//            ->keyboard(Keyboard::make()->row([
-//                Button::make('English')->action('select_language')->param('lang', 'English'),
-//                Button::make('Swahili')->action('select_language')->param('lang', 'Swahili'),
-//            ]))->send();
     }
 
 //    public function select_language(): void
