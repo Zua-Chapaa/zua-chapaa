@@ -2,15 +2,26 @@
 
 namespace App\Telegram;
 
-use DefStudio\Telegraph\Handlers\WebhookHandler;
+//{
+//    public function start(): void
+//    {
+//        Log::info("here");
+//    }
+//
+//    protected function onFailure(Throwable $throwable): void
+//    {
+//        if ($throwable instanceof NotFoundHttpException) {
+//            throw $throwable;
+//        }
+//
+//        report($throwable);
+//
+//        $this->reply('sorry man, I failed');
+//    }
+//}
 
-class TelegramWebHookHandler extends WebhookHandler
+class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
 {
-    public function start(): void
-    {
-        Log::info("here");
-    }
-
     protected function onFailure(Throwable $throwable): void
     {
         if ($throwable instanceof NotFoundHttpException) {
@@ -22,3 +33,4 @@ class TelegramWebHookHandler extends WebhookHandler
         $this->reply('sorry man, I failed');
     }
 }
+
