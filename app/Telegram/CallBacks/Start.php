@@ -27,7 +27,7 @@ trait Start
         $lang = $this->data->get('lang');
 
         $this?->getChat()
-            ->message("You have selected $lang")
+            ->message($this->build_chat($lang))
             ->replyKeyboard(
                 ReplyKeyboard::make()->buttons([
                     ReplyButton::make('Home'),
@@ -38,7 +38,20 @@ trait Start
                     ReplyButton::make('Leaders Board')->webApp('https://tipsmoto.co.ke'),
                 ])
             )->send();
+    }
 
-        $this?->getChat()->message("Other message");
+    public function build_chat($lang): string
+    {
+        $string_one = "You have selected $lang";
+        $string_two = "Please share your contact information to complete registertion.";
+
+        //TODO:: evaluate
+        $contact_exist = false;
+
+        if ($contact_exist) {
+            return $string_one;
+        } else {
+            return $string_one . " /n/n" . $string_two;
+        }
     }
 }
