@@ -51,7 +51,7 @@ trait Start
         if ($contact_exist) {
             return $string_one;
         } else {
-            return $string_one . " /n/n" . $string_two;
+            return $string_one . "'\'" . $string_two;
         }
     }
 }
