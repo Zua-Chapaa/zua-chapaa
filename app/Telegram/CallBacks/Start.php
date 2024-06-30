@@ -27,7 +27,9 @@ trait Start
 
         $build = $this?->getChat()->message($this->build_chat($lang));
 
-        if ($this->is_contact_available() === false) {
+        if ($this->is_contact_available()) {
+            Log::info("contact exist");
+        } else {
             $build->keyboard(Keyboard::make()->row([
                 Button::make('Share Contact Information')->action('share_language')
             ]));
