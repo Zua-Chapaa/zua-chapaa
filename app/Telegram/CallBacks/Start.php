@@ -4,8 +4,7 @@ namespace App\Telegram\CallBacks;
 
 use DefStudio\Telegraph\Keyboard\Button;
 use DefStudio\Telegraph\Keyboard\Keyboard;
-use DefStudio\Telegraph\Keyboard\ReplyButton;
-use DefStudio\Telegraph\Keyboard\ReplyKeyboard;
+use Illuminate\Support\Facades\Log;
 
 
 trait Start
@@ -26,18 +25,24 @@ trait Start
         //get the language chosen
         $lang = $this->data->get('lang');
 
-        $this?->getChat()
-            ->message($this->build_chat($lang))
-            ->replyKeyboard(
-                ReplyKeyboard::make()->buttons([
-                    ReplyButton::make('Home'),
-                    ReplyButton::make('About'),
-                    ReplyButton::make('Balance')->webApp('https://tipsmoto.co.ke'),
-                    ReplyButton::make('Account')->webApp('https://tipsmoto.co.ke'),
-                    ReplyButton::make('FAQ')->webApp('https://tipsmoto.co.ke'),
-                    ReplyButton::make('Leaders Board')->webApp('https://tipsmoto.co.ke'),
-                ])
-            )->send();
+        $build = $this?->getChat()->message($this->build_chat($lang));
+
+        if ($this->is_contact_available()) {
+            $build->send();
+        } else {
+            $build->keyboard(Keyboard::make()->row([
+                Button::make('Share Language')
+                    ->action('share_language')
+            ]))->send();
+        }
+
+
+    }
+
+
+    public function share_language(): void
+    {
+        Log::info("getting info");
     }
 
     public function build_chat($lang): string
@@ -58,4 +63,5 @@ trait Start
     {
         return false;
     }
+
 }
