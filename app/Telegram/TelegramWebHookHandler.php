@@ -10,10 +10,6 @@ class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandle
 
     use Start;
 
-
-
-
-
     /**
      * @throws Throwable
      */
