@@ -43,8 +43,13 @@ trait HandleChatMessage
     {
         $this->getChat()->message('Select a plan to proceed')
             ->keyboard(Keyboard::make()->row([
-                Button::make('Hourly Plan @Ksh 100')->action('select_plan')->param('plan', 'hourly'),
-                Button::make('Day Plan @Ksh 1500')->action('select_plan')->param('plan', 'daily'),
+                Button::make('Hourly Plan @Ksh 100')
+                    ->action('select_plan')
+                    ->param('plan', 'hourly'),
+
+                Button::make('Day Plan @Ksh 1500')
+                    ->action('select_plan')
+                    ->param('plan', 'daily'),
             ]))->send();
     }
 

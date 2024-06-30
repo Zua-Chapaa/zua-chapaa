@@ -2,16 +2,22 @@
 
 namespace App\Telegram\CallBacks;
 
-use DefStudio\Telegraph\Models\TelegraphChat;
+use Throwable;
 
 trait TelegramHandler
 {
     /**
-     * @return mixed
+     * @throws Throwable
      */
-    public function getChat(): mixed
+    protected function onFailure(Throwable $throwable): void
     {
-        return TelegraphChat::where('chat_id', $this->chat->chat_id)->first();
+        if ($throwable instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+            throw $throwable;
+        }
+
+        report($throwable);
+
+        $this->reply('sorry man, I failed');
     }
 
 }

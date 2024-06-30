@@ -4,26 +4,13 @@ namespace App\Telegram;
 
 use App\Telegram\CallBacks\HandleChatMessage;
 use App\Telegram\CallBacks\Start;
-use Throwable;
+use App\Telegram\CallBacks\TelegramHandler;
 
 class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
 {
-
     use Start;
     use HandleChatMessage;
-    /**
-     * @throws Throwable
-     */
-    protected function onFailure(Throwable $throwable): void
-    {
-        if ($throwable instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
-            throw $throwable;
-        }
-
-        report($throwable);
-
-        $this->reply('sorry man, I failed');
-    }
+    use TelegramHandler;
 }
 
 
