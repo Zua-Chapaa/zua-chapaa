@@ -43,15 +43,19 @@ trait Start
     public function build_chat($lang): string
     {
         $string_one = "You have selected $lang";
-        $string_two = "Please share your contact information to complete registertion.";
+        $string_two = "Please share your contact information to complete registration.";
 
-        //TODO:: evaluate
-        $contact_exist = false;
+        $contact_exist = $this->is_contact_available();
 
         if ($contact_exist) {
             return $string_one;
         } else {
-            return $string_one . "\n" . $string_two;
+            return $string_one . "\n" . "\n" . $string_two;
         }
+    }
+
+    public function is_contact_available(): bool
+    {
+        return false;
     }
 }
