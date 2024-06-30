@@ -2,13 +2,20 @@
 
 namespace App\Telegram;
 
+use Illuminate\Support\Facades\Log;
+use Throwable;
+
 class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
 {
     public function start():void
     {
         Log::info("here");
     }
-    protected function onFailure(\Throwable $throwable): void
+
+    /**
+     * @throws Throwable
+     */
+    protected function onFailure(Throwable $throwable): void
     {
         if ($throwable instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
             throw $throwable;
