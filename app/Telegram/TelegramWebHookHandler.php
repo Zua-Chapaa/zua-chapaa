@@ -2,6 +2,7 @@
 
 namespace App\Telegram;
 
+use App\Telegram\CallBacks\HandleChatMessage;
 use App\Telegram\CallBacks\Start;
 use Throwable;
 
@@ -9,6 +10,7 @@ class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandle
 {
 
     use Start;
+    use HandleChatMessage;
     /**
      * @throws Throwable
      */

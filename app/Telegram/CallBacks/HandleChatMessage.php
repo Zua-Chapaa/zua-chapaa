@@ -4,33 +4,29 @@ namespace App\Telegram\CallBacks;
 
 use DefStudio\Telegraph\Keyboard\Button;
 use DefStudio\Telegraph\Keyboard\Keyboard;
-use Illuminate\Support\Facades\Log;
 
 trait HandleChatMessage
 {
+    use GetChat;
     public function __construct($text)
     {
-        $chat = $this
-            ->getChat()
-            ->message("here")
-        ;
-
+        $chat = $this->getChat()->message("here");
 
         switch ($text) {
             case 'Home':
                 $this->goToHome();
+                break;
+            case 'Account':
+                $this->viewAccount();
+                break;
+            case 'Balance':
+                $this->checkBalance();
                 break;
             case 'Leaders Board':
                 $this->goToLeadersBoard();
                 break;
             case 'About':
                 $this->goToAbout();
-                break;
-            case 'Balance':
-                $this->checkBalance();
-                break;
-            case 'Account':
-                $this->viewAccount();
                 break;
             case 'FAQ':
                 $this->viewFAQ();
@@ -41,7 +37,7 @@ trait HandleChatMessage
         }
     }
 
-    private function goToHome()
+    private function goToHome(): void
     {
         $this->getChat()->message('Select a plan to proceed')
             ->keyboard(Keyboard::make()->row([
@@ -75,8 +71,9 @@ trait HandleChatMessage
 
     }
 
-    private function defaultResponse()
+    private function defaultResponse(): void
     {
+        $this->goToHome();
     }
 
 

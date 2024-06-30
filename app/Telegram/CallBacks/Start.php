@@ -30,9 +30,9 @@ trait Start
             ->replyKeyboard(
                 ReplyKeyboard::make()->buttons([
                     ReplyButton::make('Home'),
-                    ReplyButton::make('About'),
-                    ReplyButton::make('Balance')->webApp('https://tipsmoto.co.ke'),
                     ReplyButton::make('Account')->webApp('https://tipsmoto.co.ke'),
+                    ReplyButton::make('Balance')->webApp('https://tipsmoto.co.ke'),
+                    ReplyButton::make('About'),
                     ReplyButton::make('FAQ')->webApp('https://tipsmoto.co.ke'),
                     ReplyButton::make('Leaders Board')->webApp('https://tipsmoto.co.ke'),
                 ])
