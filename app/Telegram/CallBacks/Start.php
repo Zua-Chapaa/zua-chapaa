@@ -28,7 +28,6 @@ trait Start
 
         $this?->getChat()
             ->message("You have selected $lang")
-            ->message("other message")
             ->replyKeyboard(
                 ReplyKeyboard::make()->buttons([
                     ReplyButton::make('Home'),
@@ -39,5 +38,7 @@ trait Start
                     ReplyButton::make('Leaders Board')->webApp('https://tipsmoto.co.ke'),
                 ])
             )->send();
+
+        $this?->getChat()->message("Other message");
     }
 }
