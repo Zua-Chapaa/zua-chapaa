@@ -12,7 +12,6 @@ class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandle
 {
     public function start():void
     {
-
         $this->getChat()->message('Please choose your language')
             ->keyboard(Keyboard::make()->row([
                 Button::make('English')->action('select_language')->param('lang', 'English'),
