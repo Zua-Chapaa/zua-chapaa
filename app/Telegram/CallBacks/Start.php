@@ -6,6 +6,7 @@ use DefStudio\Telegraph\Keyboard\Button;
 use DefStudio\Telegraph\Keyboard\Keyboard;
 use DefStudio\Telegraph\Keyboard\ReplyButton;
 use DefStudio\Telegraph\Keyboard\ReplyKeyboard;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 
@@ -28,6 +29,8 @@ trait Start
         $lang = $this->data->get('lang');
 
         Session::put('language', $lang);
+        Log::info(json_encode(Session::all()));
+
 
         $build = $this?->getChat()
             ->message("You have selected $lang")
