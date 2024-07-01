@@ -12,7 +12,7 @@ trait HandleChatMessage
 
     public function handleChatMessage(Stringable $text): void
     {
-        $chat = $this->getChat()->message("here");
+        $chat = $this->getChat()->message($text);
 
         switch ($text) {
             case 'Home':
@@ -41,6 +41,9 @@ trait HandleChatMessage
 
     private function goToHome($text = null): void
     {
+        $response = $this->getChat()->message("hello")->send();
+        $response->dd();
+
         if ($this->getChat()->storage()->get('user_context') && $this->getChat()->storage()->get('user_context') == 'phone_number_request_mode') {
             $number_is_valid = $this->validateNumber($text);
 
