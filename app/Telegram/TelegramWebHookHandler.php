@@ -14,7 +14,6 @@ class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandle
     use HandleChatMessage;
     use TelegramHandler;
 
-
     use Home;
 }
 
