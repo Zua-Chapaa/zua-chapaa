@@ -2,6 +2,8 @@
 
 namespace App\Telegram;
 
+use App\Telegram\CallBacks\TelegramHandler;
+
 
 class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
 {
