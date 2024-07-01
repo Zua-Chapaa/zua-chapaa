@@ -72,7 +72,7 @@ trait HandleChatMessage
                             ->param('action', 'Cancel'),
                     ]))->send();
             }else{
-//                make a payment request
+//make a payment request
                 $this->getChat()->message("Please accept the payment request made to continue.");
             }
         }else{
