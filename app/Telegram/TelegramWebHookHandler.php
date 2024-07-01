@@ -44,22 +44,27 @@ class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandle
     {
         $chat = $this->getChat()->message($text ?? '')->send();
 
-        foreach ($this->routes as $key => $route) {
-            //no context set
-            if (strcasecmp($key, $text) === 0 || empty($this->getChat()->storage()->get('app_context'))) {
-                //set ap context
-                $this->getChat()->storage()->set('app_context', $text);
+        if (empty($this->getChat()->storage()->get('app_context'))) {
+            foreach ($this->routes as $key => $route) {
+                //no context set
+                if (strcasecmp($key, $text) === 0) {
+                    //set ap context
+                    $this->getChat()->storage()->set('app_context', $text);
 
-                //get executable
-                $function = $route['fun'];
-                if (method_exists($this, $function)) {
-                    $this->$function($text);
-                    break;
+                    //get executable
+                    $function = $route['fun'];
+                    if (method_exists($this, $function)) {
+                        $this->$function($text);
+                        break;
+                    }
+                } else {
+                    //context is set
+                    $this->getChat()->message("App context is set")->send();
                 }
-            } else {
-                //context is set
-                $this->getChat()->message("App context is set")->send();
             }
+        } else {
+            $this->getChat()->message("App context is set")->send();
+
         }
     }
 
