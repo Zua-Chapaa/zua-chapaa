@@ -41,6 +41,7 @@ trait HandleChatMessage
 
     private function goToHome($text = null): void
     {
+        dd("hi");
 //        $response = $this->getChat()->message("hello")->send();
 //        $response->dd();
 
