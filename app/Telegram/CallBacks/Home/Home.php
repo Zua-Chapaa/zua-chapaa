@@ -38,7 +38,7 @@ trait Home
         $patterns = [
             '/^07\d{8}$/',            // 07********
             '/^\+2547\d{8}$/',        // +2547********
-            '/^2547\d{8}$/'           // 2547********
+            '/^2547\d{8}$/'          // 2547********
         ];
 
         // Check if the phone number matches any of the patterns

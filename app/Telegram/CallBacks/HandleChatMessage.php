@@ -6,41 +6,11 @@ use App\Telegram\CallBacks\Home\Home;
 use DefStudio\Telegraph\Keyboard\Button;
 use DefStudio\Telegraph\Keyboard\Keyboard;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Stringable;
 
 trait HandleChatMessage
 {
     use GetChat;
     use Home;
-
-
-    public function handleChatMessage(Stringable $text): void
-    {
-        $chat = $this->getChat()->message($text);
-
-        switch ($text) {
-            case 'Home':
-                $this->goToHome($text);
-                break;
-            case 'Account':
-                $this->viewAccount();
-                break;
-            case 'Balance':
-                $this->checkBalance();
-                break;
-            case 'Leaders Board':
-                $this->goToLeadersBoard();
-                break;
-            case 'About':
-                $this->goToAbout();
-                break;
-            case 'FAQ':
-                $this->viewFAQ();
-                break;
-            default:
-                break;
-        }
-    }
 
     private function goToHome($text = null): void
     {
