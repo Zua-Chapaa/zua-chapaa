@@ -63,8 +63,17 @@ class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandle
                 }
             }
         } else {
-            $this->getChat()->message("App context is set")->send();
+            $app_context = $this->getChat()->storage()->get('app_context');
 
+            switch ($app_context) {
+                case 'Home':
+                    $this->getChat()->message("app context is Home")->send();
+                    break;
+                default;
+                    $this->getChat()->message("app context is unknown")->send();
+                    break;
+
+            }
         }
     }
 
