@@ -11,7 +11,7 @@ trait HandleChatMessage
 
     private function goToHome($text = null): void
     {
-        $this->getChat()->message("active");
+        $this->getChat()->message("home context set");
 //        if (
 //            !empty($this->getChat()->storage()->get('user_context')) &&
 //            $this->getChat()->storage()->get('user_context') == 'phone_number_request_mode'

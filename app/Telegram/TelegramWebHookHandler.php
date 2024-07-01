@@ -41,16 +41,15 @@ class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandle
     {
         $chat = $this->getChat()->message($text ?? '')->send();
 
-//
-//        foreach ($this->routes as $key => $route) {
-//            if (strcasecmp($key, $text) === 0) {
-//                $function = $route['fun'];
-//                if (method_exists($this, $function)) {
-//                    $this->$function($text);
-//                    return;
-//                }
-//            }
-//        }
+        foreach ($this->routes as $key => $route) {
+            if (strcasecmp($key, $text) === 0) {
+                $function = $route['fun'];
+                if (method_exists($this, $function)) {
+                    $this->$function($text);
+                    return;
+                }
+            }
+        }
     }
 
     /**
