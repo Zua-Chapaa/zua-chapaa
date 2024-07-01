@@ -2,17 +2,17 @@
 
 namespace App\Telegram\CallBacks;
 
+use DefStudio\Telegraph\Concerns\HasStorage;
 use DefStudio\Telegraph\Keyboard\Button;
 use DefStudio\Telegraph\Keyboard\Keyboard;
 use DefStudio\Telegraph\Keyboard\ReplyButton;
 use DefStudio\Telegraph\Keyboard\ReplyKeyboard;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 
 
 trait Start
 {
     use GetChat;
+    use HasStorage;
 
     public function start(): void
     {
@@ -28,9 +28,7 @@ trait Start
         //get the language chosen
         $lang = $this->data->get('lang');
 
-        Session::put('language', $lang);
-        Log::info(json_encode(Session::all()));
-
+        $this->getChat()->storage()->set('language', $lang);
 
         $build = $this?->getChat()
             ->message("You have selected $lang")
