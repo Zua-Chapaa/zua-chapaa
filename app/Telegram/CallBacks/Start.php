@@ -14,9 +14,14 @@ trait Start
     use GetChat;
     use HasStorage;
 
-    public function start(): void
+
+    public function __construct()
     {
         $this->getChat()->storage()->set('user_context', "");
+    }
+
+    public function start(): void
+    {
         $this->getChat()->message('Please choose your language')
             ->keyboard(Keyboard::make()->row([
                 Button::make('English')->action('select_language')->param('lang', 'English'),
@@ -26,13 +31,19 @@ trait Start
 
     public function select_language(): void
     {
-        //get the language chosen
-        $lang = $this->data->get('lang');
 
-        $this->getChat()->storage()->set('language', $lang);
+        //set the language
+        $this->getChat()
+            ->storage()
+            ->set('language', $this->data->get('lang'));
 
-        $build = $this?->getChat()
-            ->message("You have selected $lang")
+        //display the menu
+        $build = $this->getChat()
+
+            //display the language selected
+            ->message("You have selected $this->data->get('lang')")
+
+            //display the language
             ->replyKeyboard(
                 ReplyKeyboard::make()->buttons([
                     ReplyButton::make('Home'),
@@ -42,8 +53,10 @@ trait Start
                     ReplyButton::make('FAQ')->webApp('https://tipsmoto.co.ke'),
                     ReplyButton::make('Leaders Board')->webApp('https://tipsmoto.co.ke'),
                 ])
-            );
-        $build->send();
+            )
+
+            //send response
+            ->send();
     }
 
 }

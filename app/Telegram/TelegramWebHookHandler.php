@@ -14,7 +14,6 @@ class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandle
 {
     use Start;
     use HandleChatMessage;
-    use TelegramHandler;
 
     //Home
     use Home;
@@ -41,7 +40,7 @@ class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandle
     public function handleChatMessage(Stringable $text): void
     {
         $this->getChat()->message("active");
-        
+
 //        $chat = $this->getChat()->message($text);
 //
 //        foreach ($this->routes as $key => $route) {
@@ -63,7 +62,9 @@ class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandle
         if ($throwable instanceof NotFoundHttpException) {
             throw $throwable;
         }
+
         report($throwable);
+
         $this->reply('Option not available');
     }
 }
