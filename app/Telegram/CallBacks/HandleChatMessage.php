@@ -111,7 +111,7 @@ trait HandleChatMessage
 
     private function defaultResponse(): void
     {
-        $this->goToHome();
+//        $this->goToHome();
     }
 
 
