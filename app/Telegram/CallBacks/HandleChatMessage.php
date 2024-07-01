@@ -2,6 +2,7 @@
 
 namespace App\Telegram\CallBacks;
 
+use App\Telegram\CallBacks\Home\Home;
 use DefStudio\Telegraph\Keyboard\Button;
 use DefStudio\Telegraph\Keyboard\Keyboard;
 use Illuminate\Support\Stringable;
@@ -9,6 +10,8 @@ use Illuminate\Support\Stringable;
 trait HandleChatMessage
 {
     use GetChat;
+    use Home;
+
 
     public function handleChatMessage(Stringable $text): void
     {
