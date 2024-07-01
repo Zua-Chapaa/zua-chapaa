@@ -13,6 +13,8 @@ trait HandleChatMessage
 
     private function goToHome($text = null): void
     {
+        $this->getChat()->messag(empty($this->getChat()->storage->get('user_context')))->send();
+
         if (empty($this->getChat()->storage()->get('user_context'))) {
             $this->getChat()->message('Select a plan')
                 ->keyboard(Keyboard::make()->row([
