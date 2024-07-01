@@ -3,6 +3,8 @@
 namespace App\Telegram\CallBacks;
 
 use App\Telegram\CallBacks\Home\Home;
+use DefStudio\Telegraph\Keyboard\Button;
+use DefStudio\Telegraph\Keyboard\Keyboard;
 
 trait HandleChatMessage
 {
@@ -11,7 +13,16 @@ trait HandleChatMessage
 
     private function goToHome($text = null): void
     {
-        $this->getChat()->message("home context set")->send($text);
+        $this->getChat()->message('Select a plan to proceed')
+            ->keyboard(Keyboard::make()->row([
+                Button::make('Hourly Plan @Ksh 100')
+                    ->action('select_plan')
+                    ->param('plan', 'hourly'),
+
+                Button::make('Day Plan @Ksh 1500')
+                    ->action('select_plan')
+                    ->param('plan', 'daily'),
+            ]))->send();
 //        if (
 //            !empty($this->getChat()->storage()->get('user_context')) &&
 //            $this->getChat()->storage()->get('user_context') == 'phone_number_request_mode'
