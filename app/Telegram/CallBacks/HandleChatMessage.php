@@ -16,7 +16,7 @@ trait HandleChatMessage
 
         switch ($text) {
             case 'Home':
-                $this->goToHome();
+                $this->goToHome($text);
                 break;
             case 'Account':
                 $this->viewAccount();
@@ -39,7 +39,7 @@ trait HandleChatMessage
         }
     }
 
-    private function goToHome(): void
+    private function goToHome($text): void
     {
         if ($this->getChat()->storage()->get('user_context') && $this->getChat()->storage()->get('user_context') == 'phone_number_request_mode') {
             $number_is_valid = $this->validateNumber($text);
