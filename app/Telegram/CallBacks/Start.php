@@ -16,6 +16,7 @@ trait Start
 
     public function start(): void
     {
+        $this->getChat()->storage()->set('user_context', "");
         $this->getChat()->message('Please choose your language')
             ->keyboard(Keyboard::make()->row([
                 Button::make('English')->action('select_language')->param('lang', 'English'),
