@@ -15,13 +15,15 @@ trait Start
     use HasStorage;
 
 
-    public function __construct()
+    public function start_setup(): void
     {
         $this->getChat()->storage()->set('user_context', "");
+        $this->getChat()->storage()->set('plan', "");
     }
 
     public function start(): void
     {
+        $this->start_setup();
         $this->getChat()->message('Please choose your language')
             ->keyboard(Keyboard::make()->row([
                 Button::make('English')->action('select_language')->param('lang', 'English'),
