@@ -2,8 +2,6 @@
 
 namespace App\Telegram\CallBacks;
 
-use DefStudio\Telegraph\Keyboard\Button;
-use DefStudio\Telegraph\Keyboard\Keyboard;
 use Illuminate\Support\Stringable;
 
 trait HandleChatMessage
@@ -40,10 +38,7 @@ trait HandleChatMessage
 
     private function goToHome($text = null): void
     {
-        $response = $this->getChat()->message("hello")->send();
-        $response->dd();
-
-
+        $this->getChat()->message($this->getChat()->storage()->get('user_context'))->send();
 //        if ($this->getChat()->storage()->get('user_context') && $this->getChat()->storage()->get('user_context') == 'phone_number_request_mode') {
 //            $number_is_valid = $this->validateNumber($text);
 //
@@ -69,7 +64,7 @@ trait HandleChatMessage
 //            }
 //            return;
 //        }
-//
+
 //        $this->getChat()->message('Select a plan to proceed')
 //            ->keyboard(Keyboard::make()->row([
 //                Button::make('Hourly Plan @Ksh 100')
