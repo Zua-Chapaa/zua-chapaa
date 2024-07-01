@@ -15,7 +15,27 @@ trait HandleChatMessage
         $chat = $this->getChat()->message("here");
 
         if ($this->getChat()->storage()->get('user_context') && $this->getChat()->storage()->get('user_context') == 'phone_number_request_mode') {
-            $this->validateNumber($text);
+            $number_is_valid = $this->validateNumber($text);
+
+            if (!$number_is_valid) {
+                $this?->getChat()
+                    ->message(
+                        "The number you entered was invalid use either \n
+                        07********
+                        +2547********
+                        2547********
+                        Formats
+                        ")
+                    ->keyboard(Keyboard::make()->row([
+                        Button::make('Try Again')
+                            ->action('invalid_phone_number_action')
+                            ->param('action', 'Try Again'),
+
+                        Button::make('Cancel')
+                            ->action('invalid_phone_number_action')
+                            ->param('action', 'Cancel'),
+                    ]))->send();
+            }
         }
 
         switch ($text) {
