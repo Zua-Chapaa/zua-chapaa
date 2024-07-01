@@ -44,6 +44,8 @@ trait HandleChatMessage
         $response = $this->getChat()->message("hello")->send();
         $response->dd();
 
+        return;
+
         if ($this->getChat()->storage()->get('user_context') && $this->getChat()->storage()->get('user_context') == 'phone_number_request_mode') {
             $number_is_valid = $this->validateNumber($text);
 
