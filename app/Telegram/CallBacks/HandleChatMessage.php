@@ -13,7 +13,7 @@ trait HandleChatMessage
 
     private function goToHome($text = null): void
     {
-        if (!empty($this->getChat()->storage()->get('user_context'))) {
+        if (!empty($this->getChat()->storage()->get('app_context'))) {
             $this->getChat()->messag($this->getChat()->storage->get('user_context'))->send();
         } else {
             $this->getChat()->message('Select a plan')
@@ -76,7 +76,6 @@ trait HandleChatMessage
 //                        ->param('plan', 'daily'),
 //                ]))->send();
 //        }
-
 
     }
 
