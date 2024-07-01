@@ -25,6 +25,9 @@ trait Start
     {
         //get the language chosen
         $lang = $this->data->get('lang');
+
+        session(['language' => $lang]);
+
         $build = $this?->getChat()
             ->message("You have selected $lang")
             ->replyKeyboard(
