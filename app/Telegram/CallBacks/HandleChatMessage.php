@@ -13,7 +13,7 @@ trait HandleChatMessage
 
     private function goToHome($text = null): void
     {
-        $this->getChat()->message('Select a plan to proceed')
+        $this->getChat()->message('Select a plan')
             ->keyboard(Keyboard::make()->row([
                 Button::make('Hourly Plan @Ksh 100')
                     ->action('select_plan')

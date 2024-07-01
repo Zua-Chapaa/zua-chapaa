@@ -8,6 +8,20 @@ use Illuminate\Support\Stringable;
 trait Home
 {
     use GetChat;
+
+    public function select_plan(): void
+    {
+        //set context
+        $this->getChat()->storage()->set('user_context', "phone_number_request_mode");
+
+        //plan selected
+        $this->getChat()->storage()->set('plan', $this->data->get('plan'));
+
+        //enquire phone number
+        $this?->getChat()->message("Please Enter your number to proceed")->send();
+
+    }
+
     public function invalid_phone_number_action(): void
     {
         $action = $this->data->get('action');
@@ -19,16 +33,6 @@ trait Home
                 ->message("Home")
                 ->send();
         }
-    }
-    public function select_plan(): void
-    {
-        $this->getChat()->storage()->set('user_context', "phone_number_request_mode");
-        $this->getChat()->storage()->set('plan', $this->data->get('plan'));
-
-
-        $this?->getChat()
-            ->message("Please Enter your number to proceed")
-            ->send();
     }
 
     public function validateNumber(Stringable $text): mixed
