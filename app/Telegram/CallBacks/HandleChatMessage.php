@@ -45,6 +45,7 @@ trait HandleChatMessage
             $number_is_valid = $this->validateNumber($text);
 
             if (!$number_is_valid) {
+                $this->getChat()->storage()->set('user_context', "");
                 $this?->getChat()
                     ->message(
                         "The number you entered was invalid use either \n
@@ -63,7 +64,6 @@ trait HandleChatMessage
                             ->param('action', 'Cancel'),
                     ]))->send();
             }
-
             return;
         }
 
