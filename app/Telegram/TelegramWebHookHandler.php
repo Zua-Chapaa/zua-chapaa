@@ -25,7 +25,10 @@ class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandle
         parent::__construct();
 
         $this->routes = [
-            "home" => ['fun' => 'goToHome'],
+            "home" => [
+                'context' => 'Home',
+                'fun' => 'goToHome'
+            ],
             "Account" => ['fun' => 'viewAccount'],
             "Balance" => ['fun' => 'checkBalance'],
             "Leaders Board" => ['fun' => 'goToLeadersBoard'],
@@ -42,12 +45,16 @@ class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandle
         $chat = $this->getChat()->message($text ?? '')->send();
 
         foreach ($this->routes as $key => $route) {
-            if (strcasecmp($key, $text) === 0) {
+            //no context set
+            if (strcasecmp($key, $text) === 0 || empty($this->getChat()->storage()->get('user_context'))) {
                 $function = $route['fun'];
                 if (method_exists($this, $function)) {
                     $this->$function($text);
                     return;
                 }
+            } else {
+                //context is set
+                $this->getChat()->message($this->getChat()->storage()->get('user_context'))->send();
             }
         }
     }
