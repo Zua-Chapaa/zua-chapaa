@@ -14,6 +14,11 @@ trait HandleChatMessage
     {
         $chat = $this->getChat()->message("here");
 
+        if ($this->getChat()->storage()->get('user_context') && $this->getChat()->storage()->get('user_context') == 'subscription_mode') {
+            $response = $this->handlePayment();
+            return;
+        }
+
         switch ($text) {
             case 'Home':
                 $this->goToHome();
