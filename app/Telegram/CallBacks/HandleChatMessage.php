@@ -23,6 +23,8 @@ trait HandleChatMessage
                     ->action('select_plan')
                     ->param('plan', 'daily'),
             ]))->send();
+
+
 //        if (
 //            !empty($this->getChat()->storage()->get('user_context')) &&
 //            $this->getChat()->storage()->get('user_context') == 'phone_number_request_mode'
