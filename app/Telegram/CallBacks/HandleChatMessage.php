@@ -13,7 +13,7 @@ trait HandleChatMessage
 
     private function goToHome($text = null): void
     {
-        if (empty($this->getChat()->storage()->get('phone_number_request_mode'))) {
+        if (empty($this->getChat()->storage()->get('user_context'))) {
             $this->getChat()->message('Select a plan')
                 ->keyboard(Keyboard::make()->row([
                     Button::make('Hourly Plan @Ksh 100')
@@ -28,7 +28,6 @@ trait HandleChatMessage
         } else {
             $this->getChat()->messag($this->getChat()->storage->get('user_context'))->send();
         }
-
 
 //        if (
 //            !empty($this->getChat()->storage()->get('user_context')) &&
