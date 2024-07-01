@@ -41,7 +41,7 @@ trait Start
         $build = $this->getChat()
 
             //display the language selected
-            ->message("You have selected $this->data->get('lang')")
+            ->message("You have selected " . $this->data->get('lang'))
 
             //display the language
             ->replyKeyboard(
