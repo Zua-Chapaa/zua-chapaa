@@ -39,7 +39,7 @@ trait HandleChatMessage
         }
     }
 
-    private function goToHome($text): void
+    private function goToHome($text = null): void
     {
         if ($this->getChat()->storage()->get('user_context') && $this->getChat()->storage()->get('user_context') == 'phone_number_request_mode') {
             $number_is_valid = $this->validateNumber($text);
