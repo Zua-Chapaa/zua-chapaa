@@ -8,7 +8,9 @@ trait Home
 {
     public function select_plan(): void
     {
-        Log::info($this->getChat()->storage()->get('language'));
+
+        Log::info(json_encode($this->getChat()->storage()->get('language')));
+
         $this?->getChat()
             ->message("Please Enter your number to proceed")
             ->send();
