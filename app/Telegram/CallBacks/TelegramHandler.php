@@ -17,7 +17,7 @@ trait TelegramHandler
 
         report($throwable);
 
-        $this->reply('sorry man, I failed');
+        $this->reply('Option not available');
     }
 
 }

@@ -2,6 +2,8 @@
 
 namespace App\Telegram\CallBacks;
 
+use DefStudio\Telegraph\Keyboard\Button;
+use DefStudio\Telegraph\Keyboard\Keyboard;
 use Illuminate\Support\Stringable;
 
 trait HandleChatMessage
