@@ -37,9 +37,9 @@ class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandle
     /**
      * @throws \Throwable
      */
-    public function handleChatMessage(Stringable $text): void
+    public function handleChatMessage(Stringable $text = null): void
     {
-        $chat = $this->getChat()->message("here")->send();
+        $chat = $this->getChat()->message($text ?? '')->send();
 
 //
 //        foreach ($this->routes as $key => $route) {
