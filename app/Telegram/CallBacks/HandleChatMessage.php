@@ -48,7 +48,7 @@ trait HandleChatMessage
             !empty($this->getChat()->storage()->get('user_context')) &&
             $this->getChat()->storage()->get('user_context') == 'phone_number_request_mode'
         ) {
-            Log::info("here");
+            Log::info($this->validateNumber($text));
 
             if (!$this->validateNumber($text)) {
 
