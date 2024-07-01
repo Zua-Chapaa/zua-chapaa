@@ -5,6 +5,7 @@ namespace App\Telegram\CallBacks;
 use App\Telegram\CallBacks\Home\Home;
 use DefStudio\Telegraph\Keyboard\Button;
 use DefStudio\Telegraph\Keyboard\Keyboard;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Stringable;
 
 trait HandleChatMessage
@@ -47,6 +48,7 @@ trait HandleChatMessage
             !empty($this->getChat()->storage()->get('user_context')) &&
             $this->getChat()->storage()->get('user_context') == 'phone_number_request_mode'
         ) {
+            Log::info("here");
 
             if (!$this->validateNumber($text)) {
 
