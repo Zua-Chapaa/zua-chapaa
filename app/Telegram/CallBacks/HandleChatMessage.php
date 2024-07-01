@@ -3,8 +3,6 @@
 namespace App\Telegram\CallBacks;
 
 use App\Telegram\CallBacks\Home\Home;
-use DefStudio\Telegraph\Keyboard\Button;
-use DefStudio\Telegraph\Keyboard\Keyboard;
 
 trait HandleChatMessage
 {
@@ -13,20 +11,21 @@ trait HandleChatMessage
 
     private function goToHome($text = null): void
     {
-        if (!empty($this->getChat()->storage()->get('app_context'))) {
-            $this->getChat()->messag($this->getChat()->storage->get('user_context'))->send();
-        } else {
-            $this->getChat()->message('Select a plan')
-                ->keyboard(Keyboard::make()->row([
-                    Button::make('Hourly Plan @Ksh 100')
-                        ->action('select_plan')
-                        ->param('plan', 'hourly'),
-
-                    Button::make('Day Plan @Ksh 1500')
-                        ->action('select_plan')
-                        ->param('plan', 'daily'),
-                ]))->send();
-        }
+        $this->getChat()->message("go to home")->send();
+//        if (!empty($this->getChat()->storage()->get('app_context'))) {
+//            $this->getChat()->messag($this->getChat()->storage->get('user_context'))->send();
+//        } else {
+//            $this->getChat()->message('Select a plan')
+//                ->keyboard(Keyboard::make()->row([
+//                    Button::make('Hourly Plan @Ksh 100')
+//                        ->action('select_plan')
+//                        ->param('plan', 'hourly'),
+//
+//                    Button::make('Day Plan @Ksh 1500')
+//                        ->action('select_plan')
+//                        ->param('plan', 'daily'),
+//                ]))->send();
+//        }
 
 
 //        if (
