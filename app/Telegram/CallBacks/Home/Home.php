@@ -2,10 +2,12 @@
 
 namespace App\Telegram\CallBacks\Home;
 
+use App\Telegram\CallBacks\GetChat;
 use Illuminate\Support\Stringable;
 
 trait Home
 {
+    use GetChat;
     public function invalid_phone_number_action(): void
     {
         $action = $this->data->get('action');
