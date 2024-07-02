@@ -3,8 +3,6 @@
 namespace App\Telegram\CallBacks;
 
 use DefStudio\Telegraph\Concerns\HasStorage;
-use DefStudio\Telegraph\Keyboard\Button;
-use DefStudio\Telegraph\Keyboard\Keyboard;
 use DefStudio\Telegraph\Keyboard\ReplyButton;
 use DefStudio\Telegraph\Keyboard\ReplyKeyboard;
 
@@ -23,17 +21,18 @@ trait Start
 
     public function start(): void
     {
-        $this->start_setup();
-        $this->getChat()->message('Please choose your language')
-            ->keyboard(Keyboard::make()->row([
-                Button::make('English')->action('select_language')->param('lang', 'English'),
-                Button::make('Swahili')->action('select_language')->param('lang', 'Swahili'),
-            ]))->send();
+        $this->msg("here");
+
+//        $this->start_setup();
+//        $this->getChat()->message('Please choose your language')
+//            ->keyboard(Keyboard::make()->row([
+//                Button::make('English')->action('select_language')->param('lang', 'English'),
+//                Button::make('Swahili')->action('select_language')->param('lang', 'Swahili'),
+//            ]))->send();
     }
 
     public function select_language(): void
     {
-
         //set the language
         $this->getChat()
             ->storage()
