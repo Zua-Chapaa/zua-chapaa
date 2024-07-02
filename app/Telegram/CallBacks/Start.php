@@ -21,7 +21,8 @@ trait Start
 
     public function start(): void
     {
-        $this->msg("here");
+        $username = $this->getChat()->id;
+        $this->msg($username);
 
 //        $this->start_setup();
 //        $this->getChat()->message('Please choose your language')
