@@ -2,7 +2,10 @@
 
 namespace App\Telegram\CallBacks;
 
+use App\Models\User;
 use DefStudio\Telegraph\Concerns\HasStorage;
+use DefStudio\Telegraph\Keyboard\Button;
+use DefStudio\Telegraph\Keyboard\Keyboard;
 use DefStudio\Telegraph\Keyboard\ReplyButton;
 use DefStudio\Telegraph\Keyboard\ReplyKeyboard;
 
@@ -21,13 +24,41 @@ trait Start
 
     public function start(): void
     {
+        $telegram_id = $this->getChat()->id;
 
-//        $this->start_setup();
-//        $this->getChat()->message('Please choose your language')
-//            ->keyboard(Keyboard::make()->row([
-//                Button::make('English')->action('select_language')->param('lang', 'English'),
-//                Button::make('Swahili')->action('select_language')->param('lang', 'Swahili'),
-//            ]))->send();
+        $user_generated = $this->bindUser($telegram_id);
+
+        if ($user_generated) {
+            $this->start_setup();
+
+            $this->getChat()->message('Please choose your language')
+                ->keyboard(Keyboard::make()->row([
+                    Button::make('English')->action('select_language')->param('lang', 'English'),
+                    Button::make('Swahili')->action('select_language')->param('lang', 'Swahili'),
+                ]))->send();
+        }
+
+    }
+
+    public function bindUser($telegram_id): int
+    {
+        $users = User::where('telegram_id', $telegram_id)->get();
+
+        $this->msg("here");
+
+        return 0;
+
+        if (count($users->collect()) > 0) {
+            $this->msg("exist");
+        } else {
+            $user = new User();
+
+
+            $user->name = $this->getChat()->name;
+            $user->telegram_id = $telegram_id;
+
+            $this->msg($user->save());
+        }
     }
 
     public function select_language(): void
