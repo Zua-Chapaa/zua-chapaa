@@ -19,19 +19,16 @@ trait Home
 
         //enquire phone number
         $this?->getChat()->message("Please Enter your number to proceed")->send();
-
     }
 
-    public function invalid_phone_number_action(): void
+    public function invalid_phone_number(): void
     {
-        $action = $this->data->get('action');
-
-        if ($action == 'Try Again') {
+        //enquire to continue
+        if ($this->data->get('subscription_option') == 'Try Again') {
             $this->select_plan();
         } else {
-            $this?->getChat()
-                ->message("Home")
-                ->send();
+            $this->msg("Subscription canceled");
+            $this?->getChat()->message("Home")->send();
         }
     }
 

@@ -1,5 +1,5 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import {Head, Link, useForm} from '@inertiajs/vue3';
 import AuthenticationCard from '@/Components/AuthenticationCard.vue';
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
 import Checkbox from '@/Components/Checkbox.vue';
@@ -7,6 +7,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import {route} from "../../../../vendor/tightenco/ziggy/src/js/index.js";
 
 defineProps({
     canResetPassword: Boolean,
@@ -14,7 +15,7 @@ defineProps({
 });
 
 const form = useForm({
-    email: '',
+    phone: '',
     password: '',
     remember: false,
 });
@@ -32,28 +33,26 @@ const submit = () => {
 <template>
     <Head title="Log in" />
 
-    <AuthenticationCard>
+    <AuthenticationCard class="bg-gray-900 px-2 rounded overflow-auto">
         <template #logo>
             <AuthenticationCardLogo />
         </template>
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">s
             {{ status }}
         </div>
 
-        <form @submit.prevent="submit">
+        <form @submit.prevent="submit" class="!rounded">
             <div>
-                <InputLabel for="email" value="Email" />
+                <InputLabel for="email" value="Phone"/>
                 <TextInput
-                    id="email"
-                    v-model="form.email"
-                    type="email"
-                    class="mt-1 block w-full"
+                    id="phone"
+                    v-model="form.phone"
+                    type="tel"
+                    class="mt-1 block w-full h-[40px] px-[10px]"
                     required
-                    autofocus
-                    autocomplete="username"
                 />
-                <InputError class="mt-2" :message="form.errors.email" />
+                <InputError class="mt-2" :message="form.errors.phone"/>
             </div>
 
             <div class="mt-4">

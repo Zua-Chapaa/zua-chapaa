@@ -3,6 +3,8 @@
 namespace App\Telegram\CallBacks;
 
 use App\Telegram\CallBacks\Home\Home;
+use DefStudio\Telegraph\Keyboard\Button;
+use DefStudio\Telegraph\Keyboard\Keyboard;
 
 trait HandleChatMessage
 {
@@ -11,23 +13,40 @@ trait HandleChatMessage
 
     private function goToHome($text = null): void
     {
-        $this->getChat()->messag(empty($this->getChat()->storage->get('user_context')))->send();
+        if (empty($this->getChat()->storage()->get('user_context'))) {
+            $this->getChat()->message('Select a plan')
+                ->keyboard(Keyboard::make()->row([
+                    Button::make('Hourly Plan @Ksh 100')
+                        ->action('select_plan')
+                        ->param('plan', 'hourly'),
 
-//        if (empty($this->getChat()->storage()->get('user_context'))) {
-//            $this->getChat()->message('Select a plan')
-//                ->keyboard(Keyboard::make()->row([
-//                    Button::make('Hourly Plan @Ksh 100')
-//                        ->action('select_plan')
-//                        ->param('plan', 'hourly'),
-//
-//                    Button::make('Day Plan @Ksh 1500')
-//                        ->action('select_plan')
-//                        ->param('plan', 'daily'),
-//                ]))->send();
-//
-//        } else {
-//            $this->getChat()->messag($this->getChat()->storage->get('user_context'))->send();
-//        }
+                    Button::make('Day Plan @Ksh 1500')
+                        ->action('select_plan')
+                        ->param('plan', 'daily'),
+                ]))->send();
+
+        } else {
+            if (!$this->validateNumber($text)) {
+
+                // Advice user on corrections
+                $this->getChat()
+                    ->message("Invalid number. Accepted Format: \n\n 07******** \n +2547******** \n 2547******** \n")
+                    ->keyboard(Keyboard::make()->row([
+                        Button::make('Try Again')
+                            ->action('invalid_phone_number')
+                            ->param('subscription_option', 'Try Again'),
+
+                        Button::make("Cancel")
+                            ->action('invalid_phone_number')
+                            ->param('subscription_option', 'Cancel'),
+                    ]))->send();
+
+            } else {
+//                $this->getChat()->storage()->set('user_context', "");
+                $this->msg("A request will be made to your number");
+                $this->msg("Please accept the requested payment to continue");
+            }
+        }
 
 //        if (
 //            !empty($this->getChat()->storage()->get('user_context')) &&
@@ -40,24 +59,7 @@ trait HandleChatMessage
 //                //reset context
 //                $this->getChat()->storage()->set('user_context', "");
 //
-//                //Advice user on corrections
-//                $this?->getChat()
-//                    ->message(
-//                        "The number you entered was invalid use either \n
-//                        07********
-//                        +2547********
-//                        2547********
-//                        Formats
-//                        ")
-//                    ->keyboard(Keyboard::make()->row([
-//                        Button::make('Try Again')
-//                            ->action('invalid_phone_number_action')
-//                            ->param('action', 'Try Again'),
 //
-//                        Button::make('Cancel')
-//                            ->action('invalid_phone_number_action')
-//                            ->param('action', 'Cancel'),
-//                    ]))->send();
 //            }else{
 ////make a payment request
 //                $this->getChat()->message("Please accept the payment request made to continue.");
