@@ -4,10 +4,9 @@ import {Head} from '@inertiajs/vue3';
 
 <template>
     <Head title="Welcome"/>
-    <nav class="text-white bg-gray-800 flex items-center justify-content-between shadow-lg">
-        <div class="">
-            <img style="height: 45px" src="/storage/system/logo.png" alt="Logo">
-        </div>
+    <nav
+        class="text-white bg-gray-800 py-[10px] px-[10px] mb-[10px] flex items-center justify-content-between shadow-lg">
+        <img style="height: 45px" src="/storage/system/logo.png" alt="Logo">
         <!--        <button type="button">-->
         <!--            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"-->
         <!--                 class="bi bi-three-dots-vertical" viewBox="0 0 16 16">-->
@@ -16,7 +15,7 @@ import {Head} from '@inertiajs/vue3';
         <!--            </svg>-->
         <!--        </button>-->
     </nav>
-    <h1 class="px-[5px] text-[20px] text-white mb-[10px]">Account:</h1>
+    <h1 class="px-[10px] text-[30px] text-white mb-[10px]">Account:</h1>
     <div class="text-white rounded-lg p-[5px] mx-[10px] mb-[30px]" style="background-color: rgba(125,178,243,0.27)">
         <h2 class="text-white text-[20px] mb-[20px]">Total Balance:</h2>
         <p class="text-white text-right text-[30px] font-bold">Ksh 4,000</p>
@@ -43,14 +42,5 @@ import {Head} from '@inertiajs/vue3';
 <style lang="scss">
 body {
     @apply bg-gray-600
-}
-
-nav {
-    height: 60px;
-}
-
-div {
-    li {
-    }
 }
 </style>
