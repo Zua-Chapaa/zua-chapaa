@@ -4,9 +4,9 @@ import {Head} from '@inertiajs/vue3';
 
 <template>
     <Head title="Welcome"/>
-    <nav class="text-white flex items-center justify-content-between shadow-lg">
+    <nav class="text-white bg-gray-800 flex items-center justify-content-between shadow-lg">
         <div class="">
-            <img style="height: 30px" class="h-[60px]" src="/storage/system/logo.png" alt="Logo">
+            <img style="height: 45px" src="/storage/system/logo.png" alt="Logo">
         </div>
         <!--        <button type="button">-->
         <!--            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"-->
@@ -46,7 +46,7 @@ body {
 }
 
 nav {
-    @apply bg-gray-900 h-12 px-2 mb-4
+    height: 60px;
 }
 
 div {
