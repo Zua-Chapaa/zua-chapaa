@@ -1,5 +1,6 @@
 <script setup>
 import {Head} from '@inertiajs/vue3';
+import TextInput from "@/Components/TextInput.vue";
 </script>
 
 <template>
@@ -16,6 +17,26 @@ import {Head} from '@inertiajs/vue3';
         <!--        </button>-->
     </nav>
     <h1 class="px-[10px] text-[30px] text-white mb-[10px]">Account:</h1>
+    <form class="mx-[10px] ">
+        <ul>
+            <li style="background-color: rgba(125,178,243,0.27)" class="p-[10px] rounded mb-[5px] ">
+                <label class="block text-sm text-white mb-[5px]">Username</label>
+                <TextInput type="text" class="w-full p-[5px]"></TextInput>
+            </li>
+            <li style="background-color: rgba(125,178,243,0.27)" class="p-[10px] rounded mb-[5px] ">
+                <label class="block text-sm text-white mb-[5px]">Email</label>
+                <TextInput type="text" class="w-full p-[5px]"></TextInput>
+            </li>
+            <li style="background-color: rgba(125,178,243,0.27)" class="p-[10px] rounded mb-[5px] ">
+                <label class="block text-sm text-white mb-[5px]">Phone Number</label>
+                <TextInput type="text" class="w-full p-[5px]"></TextInput>
+            </li>
+        </ul>
+        <div class="flex gap-2">
+            <button class="btn-primary btn w-full">Update</button>
+            <button class="btn-danger btn w-full">Cancel</button>
+        </div>
+    </form>
 </template>
 
 
