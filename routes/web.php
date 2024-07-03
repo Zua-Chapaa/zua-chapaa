@@ -24,10 +24,27 @@ Route::middleware([
     })->name('dashboard');
 });
 
+Route::get('/account/{TelegraphChatID}', function ($TelegraphChatID) {
+    return Inertia::render('Telegram/Account');
+});
+
+
 Route::get('/balance/{TelegraphChatID}', function ($TelegraphChatID) {
     return Inertia::render('Telegram/Balance');
 });
 
-Route::get('/account/{TelegraphChatID}', function ($TelegraphChatID) {
-    return Inertia::render('Telegram/Account');
+Route::get('/leaderboard', function ($TelegraphChatID) {
+    return Inertia::render('Telegram/Leaderboard');
 });
+
+
+Route::get('/about', function ($TelegraphChatID) {
+    return Inertia::render('Telegram/About');
+});
+
+Route::get('/faq', function ($TelegraphChatID) {
+    return Inertia::render('Telegram/Faq');
+});
+
+
+
