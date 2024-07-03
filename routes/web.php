@@ -33,16 +33,16 @@ Route::get('/balance/{TelegraphChatID}', function ($TelegraphChatID) {
     return Inertia::render('Telegram/Balance');
 });
 
-Route::get('/leaderboard', function ($TelegraphChatID) {
+Route::get('/leaderboard', function () {
     return Inertia::render('Telegram/Leaderboard');
 });
 
 
-Route::get('/about', function ($TelegraphChatID) {
+Route::get('/about', function () {
     return Inertia::render('Telegram/About');
 });
 
-Route::get('/faq', function ($TelegraphChatID) {
+Route::get('/faq', function () {
     return Inertia::render('Telegram/Faq');
 });
 
