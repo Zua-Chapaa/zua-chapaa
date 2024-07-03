@@ -77,9 +77,9 @@ trait Start
                     ReplyButton::make('Home'),
                     ReplyButton::make('Account')->webApp("https://zuachapaa.tipsmoto.co.ke/account/" . $this->getChat()->id),
                     ReplyButton::make('Balance')->webApp('https://zuachapaa.tipsmoto.co.ke/balance/' . $this->getChat()->id),
-                    ReplyButton::make('About'),
-                    ReplyButton::make('FAQ')->webApp('https://zuachapaa.tipsmoto.co.ke/'),
-                    ReplyButton::make('Leaders Board')->webApp("https://zuachapaa.tipsmoto.co.ke/"),
+                    ReplyButton::make('About')->webApp('https://zuachapaa.tipsmoto.co.ke/about/'),
+                    ReplyButton::make('FAQ')->webApp('https://zuachapaa.tipsmoto.co.ke/faq'),
+                    ReplyButton::make('Leaders Board')->webApp("https://zuachapaa.tipsmoto.co.ke/leadersboard"),
                 ])
             )
 
