@@ -38,7 +38,7 @@ trait HandleChatMessage
 
                 // Advice user on corrections
                 $this->getChat()
-                    ->message("Invalid number. Accepted Format: \n\n 07******** \n +2547******** \n 2547******** \n")
+                    ->message("Invalid number. Accepted Format: 2547******** \n")
                     ->keyboard(Keyboard::make()->row([
                         Button::make('Try Again')
                             ->action('invalid_phone_number')

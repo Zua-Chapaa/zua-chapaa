@@ -15,15 +15,28 @@ trait MpesaGenerators
 
     public function data_generator(TelegraphChat $chat, Stringable $text): array
     {
-        $amount = $chat->storage()->get('plan') == 'hourly' ? 1 : 2;
-        $timestamp = time();
-        $passKey = env('MPESA_CONSUMER_KEY') . ":" . env('MPESA_CONSUMER_SECRET');
         $businessShortCode = env('BUSINESS_SHORT_CODE');
+        $timestamp = date("YmdHis");
+        $passKey = env('PASS_KEY');
+
+        $chat->message(" " . $passKey . " ")->send();
+
+//        $chat->message(json_encode(
+//            [
+//                $businessShortCode = env('BUSINESS_SHORT_CODE'),
+//                $timestamp = date("YmdHis"),
+//                $passKey = env('PASS_KEY')
+//            ]
+//        ))->send();
+
+        $amount = $chat->storage()->get('plan') == 'hourly' ? 1 : 2;
 
         return [
-            "encoded_string" => base64_encode($businessShortCode . $timestamp . $passKey),
+            "encoded_string" => base64_encode($businessShortCode . $passKey . $timestamp),
             "timestamp" => $timestamp,
             "amount" => $amount
         ];
     }
 }
+
+

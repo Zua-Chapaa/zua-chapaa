@@ -18,11 +18,9 @@ class MpesaController extends Controller
         $response = json_decode($this->getAuthorisation($encoded_string));
         $access_token = $response->access_token;
 
-//        $chat->message($text)->send();
-
         $response = $this->makePaymentRequest($access_token, $chat, $text);
 
-//        $chat->message($response)->send();
+        $chat->message($response)->send();
     }
 
 
@@ -35,13 +33,27 @@ class MpesaController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $response = curl_exec($ch);
         curl_close($ch);
+
         return $response;
     }
-
 
     public function makePaymentRequest($access_token, TelegraphChat $chat, Stringable $text): bool|string
     {
         $make_values = $this->data_generator($chat, $text);
+
+        $chat->message('{
+                            "BusinessShortCode": "' . env('BUSINESS_SHORT_CODE') . '",
+                            "Password": "' . $make_values["encoded_string"] . ' ",
+                            "Timestamp": "' . $make_values["timestamp"] . '",
+                            "TransactionType": "CustomerPayBillOnline",
+                            "Amount": "' . $make_values['amount'] . '",
+                            "PartyA": "' . $text . '",
+                            "PartyB": "' . env('BUSINESS_SHORT_CODE') . '",
+                            "PhoneNumber": "' . $text . '",
+                            "CallBackURL": "https://zuachapaa.tipsmoto.co.ke/mpesa/callback",
+                            "AccountReference": "Shikisha Kakitu LTD",
+                            "TransactionDesc": "Payment for ' . $text . ' Subscription",
+                        }')->send();
 
         $curl = curl_init();
 
@@ -63,7 +75,7 @@ class MpesaController extends Controller
                             "PartyA": "' . $text . '",
                             "PartyB": "' . env('BUSINESS_SHORT_CODE') . '",
                             "PhoneNumber": "' . $text . '",
-                            "CallBackURL": "http://zuachapaa.tipsmoto.co.ke/mpesa/callback",
+                            "CallBackURL": "https://zuachapaa.tipsmoto.co.ke/mpesa/callback",
                             "AccountReference": " ",
                             "TransactionDesc": " "
                         }',
