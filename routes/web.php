@@ -1,5 +1,6 @@
 <?php
 
+use DefStudio\Telegraph\Models\TelegraphChat;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -22,4 +23,9 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+});
+
+Route::get('/balance/{TelegraphChatID}', function (TelegraphChat $TelegraphChatID) {
+    dd($TelegraphChatID);
+//    return Inertia::render('Welcome');
 });

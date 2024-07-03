@@ -76,7 +76,7 @@ trait Start
                 ReplyKeyboard::make()->buttons([
                     ReplyButton::make('Home'),
                     ReplyButton::make('Account')->webApp("https://zuachapaa.tipsmoto.co.ke/"),
-                    ReplyButton::make('Balance')->webApp('https://zuachapaa.tipsmoto.co.ke/'),
+                    ReplyButton::make('Balance')->webApp('https://zuachapaa.tipsmoto.co.ke/balance/' . $this->getChat()->id),
                     ReplyButton::make('About'),
                     ReplyButton::make('FAQ')->webApp('https://zuachapaa.tipsmoto.co.ke/'),
                     ReplyButton::make('Leaders Board')->webApp("https://zuachapaa.tipsmoto.co.ke/"),
