@@ -14,7 +14,7 @@ trait HandleChatMessage
 
     protected MpesaController $m_pesa_controller;
 
-    public function __construct(MpesaController $m_pesa_controller)
+    public function setMpesaController(MpesaController $m_pesa_controller): void
     {
         $this->m_pesa_controller = $m_pesa_controller;
     }
@@ -51,9 +51,8 @@ trait HandleChatMessage
 
             } else {
 //                $this->getChat()->storage()->set('user_context', "");
-                $this->msg("A request will be made to your number");
-                $this->msg("Please accept the requested payment to continue");
-                $this->m_pesa_controller->sendRequest($this->getChat());
+                $this->msg("Please accept the payment requested to continue");
+                $this->m_pesa_controller->sendRequest($this->getChat(), $text);
             }
         }
 

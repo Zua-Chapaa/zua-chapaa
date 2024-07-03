@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MpesaController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -45,6 +46,9 @@ Route::get('/about', function () {
 Route::get('/faq', function () {
     return Inertia::render('Telegram/Faq');
 });
+
+
+Route::get('mpesa/callback', [MpesaController::class, 'mpesa_callback']);
 
 
 

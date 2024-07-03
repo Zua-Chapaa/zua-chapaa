@@ -2,6 +2,7 @@
 
 namespace App\Telegram;
 
+use App\Http\Controllers\MpesaController;
 use App\Telegram\CallBacks\GetChat;
 use App\Telegram\CallBacks\HandleChatMessage;
 use App\Telegram\CallBacks\Home\Home;
@@ -23,9 +24,11 @@ class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandle
 
     protected array $routes;
 
-    public function __construct()
+    public function __construct(MpesaController $m_pesa_controller)
     {
         parent::__construct();
+
+        $this->setMpesaController($m_pesa_controller);
 
         $this->routes = [
             "home" => [
