@@ -27,3 +27,7 @@ Route::middleware([
 Route::get('/balance/{TelegraphChatID}', function ($TelegraphChatID) {
     return Inertia::render('Telegram/Balance');
 });
+
+Route::get('/Account/{TelegraphChatID}', function ($TelegraphChatID) {
+    return Inertia::render('Telegram/Balance');
+});

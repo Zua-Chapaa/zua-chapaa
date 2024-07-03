@@ -15,7 +15,7 @@ import {Head} from '@inertiajs/vue3';
         <!--            </svg>-->
         <!--        </button>-->
     </nav>
-    <h1 class="px-[10px] text-[30px] text-white mb-[10px]">Account:</h1>
+    <h1 class="px-[10px] text-[30px] text-white mb-[10px]">Balance:</h1>
     <div class="text-white rounded-lg p-[5px] mx-[10px] mb-[5px]" style="background-color: rgba(125,178,243,0.27)">
         <h2 class="text-white text-[20px] mb-[20px]">Total Balance:</h2>
         <p class="text-white text-right text-[30px] font-bold ">Ksh 4,000</p>
