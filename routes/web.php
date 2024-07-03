@@ -26,6 +26,5 @@ Route::middleware([
 });
 
 Route::get('/balance/{TelegraphChatID}', function (TelegraphChat $TelegraphChatID) {
-    dd($TelegraphChatID);
-//    return Inertia::render('Welcome');
+    return Inertia::render('Telegram/Balance');
 });
