@@ -16,15 +16,17 @@ import {Head} from '@inertiajs/vue3';
         <!--        </button>-->
     </nav>
     <h1 class="px-[10px] text-[30px] text-white mb-[10px]">Account:</h1>
-    <div class="text-white rounded-lg p-[5px] mx-[10px] mb-[30px]" style="background-color: rgba(125,178,243,0.27)">
+    <div class="text-white rounded-lg p-[5px] mx-[10px] mb-[5px]" style="background-color: rgba(125,178,243,0.27)">
         <h2 class="text-white text-[20px] mb-[20px]">Total Balance:</h2>
-        <p class="text-white text-right text-[30px] font-bold">Ksh 4,000</p>
+        <p class="text-white text-right text-[30px] font-bold ">Ksh 4,000</p>
     </div>
-
+    <div class="text-white rounded-lg  mx-[10px] mb-[30px]">
+        <button type="button" class="block w-full rounded bg-blue-400 py-[6px]">Withdraw</button>
+    </div>
     <div class="mx-[5px] p-[10px] rounded-lg">
         <h2 class="text-white text-[20px] mb-[20px]">Transactions:</h2>
         <ul>
-            <li v-for="x in 5" class="transaction p-[5px] rounded text-xs text-gray-50 gap-2 pb-[5px] mb-[5px]"
+            <li v-for="x in 5" class="transaction p-[10px] rounded text-xs text-gray-50 gap-2 pb-[5px] mb-[5px]"
                 style="background-color: rgba(125,178,243,0.27)">
                 <p class="mb-[5px]">
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolore eum ex iste maxime nesciunt omnis,
