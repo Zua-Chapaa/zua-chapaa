@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Generators\MpesaGenerators;
+use App\Models\Order;
+use App\Models\User;
 use DefStudio\Telegraph\Models\TelegraphChat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Stringable;
@@ -13,15 +15,33 @@ class MpesaController extends Controller
 
     public function sendRequest(TelegraphChat $chat, Stringable $text): void
     {
-        $encoded_string = $this->basicAuthorisation($chat);
-        $response = json_decode($this->getAuthorisation($encoded_string));
-        $access_token = $response->access_token;
+//        //get authorisation key
+//        $encoded_string = $this->basicAuthorisation($chat);
+//
+//        //decode response
+//        $response = json_decode($this->getAuthorisation($encoded_string));
+//
+//        //get access token
+//        $access_token = $response->access_token;
+//
+//        //Send request
+//        $response = $this->makePaymentRequest($access_token, $chat, $text);
+//
+//        //decode response
+//        $response_parsed = json_decode($response);
 
-        $response = $this->makePaymentRequest($access_token, $chat, $text);
-        $response_parsed = json_decode($response);
+        //make an order matching request
+        $user = User::where('telegram_id', $chat->id)->first();
+        $order = new Order();
 
+        $order->user_id = $user->id;
+        $order->telegram_chat_id = $chat->id;
+        $order->amount = $chat->storage()->get('plan') == 'hourly' ? 1 : 2;
 
-        $chat->message("hi" . $response_parsed)->send();
+        $order->save();
+
+        $chat->message("created order")->send();
+
     }
 
 
@@ -80,15 +100,22 @@ class MpesaController extends Controller
 
     public function mpesa_callback(Request $request, $by_pass = false): void
     {
-        $chat = TelegraphChat::where("id", 2)->first();
+        $chat = TelegraphChat::where("id", 1)->first();
+        $order = Order::where('telegram_chat_id', $chat->id)
+            ->where('status', 'pending')
+            ->first();
 
-        $subscription = null;
+        if ($order) {
+            $order->status = 'paid';
+            $user = User::where('telegram_id', $chat->id)->first();
 
-        $chat->message($subscription ?? "none")->send();
-    }
+            $user->active_subscription = $order->amount == 1 ? "Hourly" : "Daily";
 
-    public function make_empty_subscription()
-    {
+            $order->save();
+            $user->save();
 
+            //reset user context
+            $chat->storage()->set('app_context', "");
+        }
     }
 }

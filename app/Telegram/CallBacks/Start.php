@@ -48,10 +48,13 @@ trait Start
         if (count($user->collect()) > 0) {
             return $user[0];
         } else {
-            $this->msg("not exist");
+
+            //user does not exist
             $user = new User();
+
             $user->name = $this->getChat()->name;
             $user->telegram_id = $telegram_id;
+
             $user->save();
 
             return $user;

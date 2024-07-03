@@ -49,3 +49,7 @@ Route::get('/faq', function () {
 
 
 Route::any('/mpesa/callback', [MpesaController::class, 'mpesa_callback']);
+
+Route::get('/Schedule', function () {
+    \Illuminate\Support\Facades\Log::info("running");
+});

@@ -13,8 +13,8 @@ return new class extends Migration {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('telegram_chat$_id');
-            $table->decimal('amount', 15, 12);
+            $table->unsignedBigInteger('telegram_chat_id');
+            $table->decimal('amount', 15, 2);
             $table->string('status')->default('pending');
             $table->timestamps();
         });
