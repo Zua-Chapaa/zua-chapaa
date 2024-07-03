@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Generators\MpesaGenerators;
 use DefStudio\Telegraph\Models\TelegraphChat;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Stringable;
 
 class MpesaController extends Controller
@@ -19,8 +18,10 @@ class MpesaController extends Controller
         $access_token = $response->access_token;
 
         $response = $this->makePaymentRequest($access_token, $chat, $text);
+        $response_parsed = json_decode($response);
 
-        $chat->message($response)->send();
+
+        $chat->message("hi" . $response_parsed)->send();
     }
 
 
@@ -41,20 +42,6 @@ class MpesaController extends Controller
     {
         $make_values = $this->data_generator($chat, $text);
 
-        $chat->message('{
-                            "BusinessShortCode": "' . env('BUSINESS_SHORT_CODE') . '",
-                            "Password": "' . $make_values["encoded_string"] . ' ",
-                            "Timestamp": "' . $make_values["timestamp"] . '",
-                            "TransactionType": "CustomerPayBillOnline",
-                            "Amount": "' . $make_values['amount'] . '",
-                            "PartyA": "' . $text . '",
-                            "PartyB": "' . env('BUSINESS_SHORT_CODE') . '",
-                            "PhoneNumber": "' . $text . '",
-                            "CallBackURL": "https://zuachapaa.tipsmoto.co.ke/mpesa/callback",
-                            "AccountReference": "Shikisha Kakitu LTD",
-                            "TransactionDesc": "Payment for ' . $text . ' Subscription",
-                        }')->send();
-
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
@@ -67,21 +54,21 @@ class MpesaController extends Controller
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_POSTFIELDS => '{
-                            "BusinessShortCode": "' . env('BUSINESS_SHORT_CODE') . '",
-                            "Password": "' . $make_values["encoded_string"] . ' ",
-                            "Timestamp": "' . $make_values["timestamp"] . '",
-                            "TransactionType": "CustomerPayBillOnline",
-                            "Amount": "' . $make_values['amount'] . '",
-                            "PartyA": "' . $text . '",
-                            "PartyB": "' . env('BUSINESS_SHORT_CODE') . '",
-                            "PhoneNumber": "' . $text . '",
-                            "CallBackURL": "https://zuachapaa.tipsmoto.co.ke/mpesa/callback",
-                            "AccountReference": " ",
-                            "TransactionDesc": " "
-                        }',
+                                   "BusinessShortCode": "' . env('BUSINESS_SHORT_CODE') . '",
+                                   "Password": "' . $make_values["encoded_string"] . '",
+                                   "Timestamp":"' . $make_values["timestamp"] . '",
+                                   "TransactionType": "CustomerPayBillOnline",
+                                   "Amount": "' . $make_values['amount'] . '",
+                                   "PartyA":"' . $text . '",
+                                   "PartyB":"' . env('BUSINESS_SHORT_CODE') . '",
+                                   "PhoneNumber":"' . $text . '",
+                                   "CallBackURL": "https://zuachapaa.tipsmoto.co.ke/mpesa/callback",
+                                   "AccountReference":"Shikisha Kakitu LTD",
+                                   "TransactionDesc":"Payment for ' . $text . ' Subscription"
+                                }',
             CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
                 'Authorization: Bearer ' . $access_token,
-                'Content-Type: application/json'
             ),
         ));
 
@@ -91,8 +78,17 @@ class MpesaController extends Controller
         return $response;
     }
 
-    public function mpesa_callback(Request $request): void
+    public function mpesa_callback(Request $request, $by_pass = false): void
     {
-        Log::info($request);
+        $chat = TelegraphChat::where("id", 2)->first();
+
+        $subscription = null;
+
+        $chat->message($subscription ?? "none")->send();
+    }
+
+    public function make_empty_subscription()
+    {
+
     }
 }

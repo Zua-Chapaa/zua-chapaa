@@ -18,17 +18,6 @@ trait MpesaGenerators
         $businessShortCode = env('BUSINESS_SHORT_CODE');
         $timestamp = date("YmdHis");
         $passKey = env('PASS_KEY');
-
-        $chat->message(" " . $passKey . " ")->send();
-
-//        $chat->message(json_encode(
-//            [
-//                $businessShortCode = env('BUSINESS_SHORT_CODE'),
-//                $timestamp = date("YmdHis"),
-//                $passKey = env('PASS_KEY')
-//            ]
-//        ))->send();
-
         $amount = $chat->storage()->get('plan') == 'hourly' ? 1 : 2;
 
         return [

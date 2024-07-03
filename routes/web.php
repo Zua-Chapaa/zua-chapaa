@@ -48,7 +48,4 @@ Route::get('/faq', function () {
 });
 
 
-Route::get('mpesa/callback', [MpesaController::class, 'mpesa_callback']);
-
-
-
+Route::any('/mpesa/callback', [MpesaController::class, 'mpesa_callback']);

@@ -6,8 +6,12 @@ use DefStudio\Telegraph\Models\TelegraphChat;
 
 trait GetChat
 {
-    function getChat()
+    function getChat($id = null)
     {
-        return TelegraphChat::where('chat_id', $this->chat->chat_id)->first();
+        if ($id == null) {
+            return TelegraphChat::where('chat_id', $this->chat->chat_id)->first();
+        } else {
+            return TelegraphChat::where('id', $id)->first();
+        }
     }
 }

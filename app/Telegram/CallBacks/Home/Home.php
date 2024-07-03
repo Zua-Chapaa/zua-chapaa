@@ -28,6 +28,7 @@ trait Home
             $this->select_plan();
         } else {
             $this->msg("Subscription canceled");
+            $this->getChat()->storage()->set('user_context', "phone_number_request_mode");
             $this?->getChat()->message("Home")->send();
         }
     }
