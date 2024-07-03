@@ -2,6 +2,7 @@
 
 namespace App\Telegram\CallBacks;
 
+use App\Http\Controllers\MpesaController;
 use App\Telegram\CallBacks\Home\Home;
 use DefStudio\Telegraph\Keyboard\Button;
 use DefStudio\Telegraph\Keyboard\Keyboard;
@@ -10,6 +11,13 @@ trait HandleChatMessage
 {
     use GetChat;
     use Home;
+
+    protected MpesaController $m_pesa_controller;
+
+    public function __construct(MpesaController $m_pesa_controller)
+    {
+        $this->m_pesa_controller = $m_pesa_controller;
+    }
 
     private function goToHome($text = null): void
     {
@@ -45,6 +53,7 @@ trait HandleChatMessage
 //                $this->getChat()->storage()->set('user_context', "");
                 $this->msg("A request will be made to your number");
                 $this->msg("Please accept the requested payment to continue");
+                $this->m_pesa_controller->sendRequest($this->getChat());
             }
         }
 

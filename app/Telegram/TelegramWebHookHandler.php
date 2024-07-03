@@ -80,23 +80,6 @@ class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandle
         }
     }
 
-
-    public function invalid_phone_number_action(): void
-    {
-        $this->msg("action-cancel");
-        //enquire to continue
-//        $action = $this->data->get('action');
-//
-//        if ($action == 'Try Again') {
-//            $this->select_plan();
-//        } else {
-//            $this?->getChat()
-//                ->message("Home")
-//                ->send();
-//        }
-    }
-
-
     /**
      * @throws \Throwable
      */
