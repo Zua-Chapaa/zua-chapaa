@@ -40,24 +40,21 @@ trait Start
 
     }
 
-    public function bindUser($telegram_id): int
+    public function bindUser($telegram_id)
     {
-        $users = User::where('telegram_id', $telegram_id)->get();
+        $user = User::where('telegram_id', $telegram_id)->get();
 
-        $this->msg("here");
 
-        return 0;
-
-        if (count($users->collect()) > 0) {
-            $this->msg("exist");
+        if (count($user->collect()) > 0) {
+            return $user[0];
         } else {
+            $this->msg("not exist");
             $user = new User();
-
-
             $user->name = $this->getChat()->name;
             $user->telegram_id = $telegram_id;
+            $user->save();
 
-            $this->msg($user->save());
+            return $user;
         }
     }
 
