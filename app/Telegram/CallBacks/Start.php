@@ -94,7 +94,6 @@ trait Start
             ->send();
     }
 
-
     //private functions
     private function start_setup(): void
     {
