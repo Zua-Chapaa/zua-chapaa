@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Log;
+use DefStudio\Telegraph\Models\TelegraphChat;
+use JetBrains\PhpStorm\NoReturn;
 
 class TelegramController extends Controller
 {
-    public function __invoke(): void
+    #[NoReturn] public function __invoke(): void
     {
-        Log::info("TelegramController");
+        $chat = TelegraphChat::where('name', '[supergroup] Shikisha Kakitu')->first();
+        $chat->message("Welcome to the 00:00 Session. Hope you all have fun")->send();
     }
+
+
 }
