@@ -15,13 +15,6 @@ trait Start
     use GetChat;
     use HasStorage;
 
-
-    public function start_setup(): void
-    {
-        $this->getChat()->storage()->set('user_context', "");
-        $this->getChat()->storage()->set('plan', "");
-    }
-
     public function start(): void
     {
         $telegram_id = $this->getChat()->id;
@@ -32,10 +25,21 @@ trait Start
             $this->start_setup();
 
             $this->getChat()->message('Please choose your language')
-                ->keyboard(Keyboard::make()->row([
-                    Button::make('English')->action('select_language')->param('lang', 'English'),
-                    Button::make('Swahili')->action('select_language')->param('lang', 'Swahili'),
-                ]))->send();
+                ->keyboard(Keyboard::make()
+                    ->row([
+                        Button::make('English')->action('select_language')->param('lang', 'English'),
+                        Button::make('Swahili')->action('select_language')->param('lang', 'Swahili'),
+                    ])->row([
+                        Button::make('English')->action('select_language')->param('lang', 'English'),
+                        Button::make('English')->action('select_language')->param('lang', 'English'),
+                    ])->row([
+                        Button::make('English')->action('select_language')->param('lang', 'English'),
+                        Button::make('English')->action('select_language')->param('lang', 'English'),
+                    ])->row([
+                        Button::make('English')->action('select_language')->param('lang', 'English'),
+                        Button::make('English')->action('select_language')->param('lang', 'English'),
+                    ])
+                )->send();
         }
 
     }
@@ -46,15 +50,17 @@ trait Start
 
 
         if (count($user->collect()) > 0) {
+
+            //user exist
             return $user[0];
+
         } else {
-
             //user does not exist
-            $user = new User();
 
+            //create a new user
+            $user = new User();
             $user->name = $this->getChat()->name;
             $user->telegram_id = $telegram_id;
-
             $user->save();
 
             return $user;
@@ -64,9 +70,7 @@ trait Start
     public function select_language(): void
     {
         //set the language
-        $this->getChat()
-            ->storage()
-            ->set('language', $this->data->get('lang'));
+        $this->getChat()->storage()->set('language', $this->data->get('lang'));
 
         //display the menu
         $build = $this->getChat()
@@ -88,6 +92,14 @@ trait Start
 
             //send response
             ->send();
+    }
+
+
+    //private functions
+    private function start_setup(): void
+    {
+        $this->getChat()->storage()->set('user_context', "");
+        $this->getChat()->storage()->set('plan', "");
     }
 
 }

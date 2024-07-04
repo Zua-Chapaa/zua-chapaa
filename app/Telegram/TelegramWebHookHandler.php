@@ -8,7 +8,8 @@ use App\Telegram\CallBacks\HandleChatMessage;
 use App\Telegram\CallBacks\Home\Home;
 use App\Telegram\CallBacks\Start;
 use App\Telegram\CallBacks\TelegramHandler;
-use Illuminate\Support\Stringable;
+use DefStudio\Telegraph\Models\TelegraphBot;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
@@ -27,7 +28,6 @@ class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandle
     public function __construct(MpesaController $m_pesa_controller)
     {
         parent::__construct();
-
         $this->setMpesaController($m_pesa_controller);
 
         $this->routes = [
@@ -46,7 +46,7 @@ class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandle
     /**
      * @throws \Throwable
      */
-    public function handleChatMessage(Stringable $text = null): void
+    public function handleChatMessage($text = null): void
     {
         if (empty($this->getChat()->storage()->get('app_context'))) {
 
@@ -62,9 +62,6 @@ class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandle
                         $this->$function($text);
                         break;
                     }
-                } else {
-                    //context is set
-                    $this->getChat()->message("App context is set")->send();
                 }
             }
         } else {
@@ -82,6 +79,15 @@ class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandle
             }
         }
     }
+
+    /**
+     * @throws \Throwable
+     */
+    public function handle(Request $request, TelegraphBot $bot): void
+    {
+        parent::handle($request, $bot);
+    }
+
 
     /**
      * @throws \Throwable
