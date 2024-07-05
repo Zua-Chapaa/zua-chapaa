@@ -18,7 +18,6 @@ trait Start
     public function start(): void
     {
         $telegram_id = $this->getChat()->id;
-
         $user_generated = $this->bindUser($telegram_id);
 
         if ($user_generated) {
@@ -29,15 +28,6 @@ trait Start
                     ->row([
                         Button::make('English')->action('select_language')->param('lang', 'English'),
                         Button::make('Swahili')->action('select_language')->param('lang', 'Swahili'),
-                    ])->row([
-                        Button::make('English')->action('select_language')->param('lang', 'English'),
-                        Button::make('English')->action('select_language')->param('lang', 'English'),
-                    ])->row([
-                        Button::make('English')->action('select_language')->param('lang', 'English'),
-                        Button::make('English')->action('select_language')->param('lang', 'English'),
-                    ])->row([
-                        Button::make('English')->action('select_language')->param('lang', 'English'),
-                        Button::make('English')->action('select_language')->param('lang', 'English'),
                     ])
                 )->send();
         }
@@ -48,15 +38,11 @@ trait Start
     {
         $user = User::where('telegram_id', $telegram_id)->get();
 
-
         if (count($user->collect()) > 0) {
-
             //user exist
             return $user[0];
-
         } else {
             //user does not exist
-
             //create a new user
             $user = new User();
             $user->name = $this->getChat()->name;
@@ -73,10 +59,9 @@ trait Start
         $this->getChat()->storage()->set('language', $this->data->get('lang'));
 
         //display the menu
-        $build = $this->getChat()
-
+        $this->getChat()
             //display the language selected
-            ->message("You have selected " . $this->data->get('lang'))
+            ->message("You have selected" . $this->data->get('lang'))
 
             //display the language
             ->replyKeyboard(
@@ -97,7 +82,9 @@ trait Start
     //private functions
     private function start_setup(): void
     {
+        $this->getChat()->storage()->set('application_context', "");
         $this->getChat()->storage()->set('user_context', "");
+        $this->getChat()->storage()->set('language', "");
         $this->getChat()->storage()->set('plan', "");
     }
 

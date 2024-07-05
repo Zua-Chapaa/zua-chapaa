@@ -8,12 +8,14 @@ use App\Telegram\CallBacks\HandleChatMessage;
 use App\Telegram\CallBacks\Home\Home;
 use App\Telegram\CallBacks\Start;
 use App\Telegram\CallBacks\TelegramHandler;
+use DefStudio\Telegraph\Handlers\WebhookHandler;
 use DefStudio\Telegraph\Models\TelegraphBot;
+use DefStudio\Telegraph\Models\TelegraphChat;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
-class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandler
+class TelegramWebHookHandler extends WebhookHandler
 {
     use Start;
     use HandleChatMessage;
@@ -29,69 +31,74 @@ class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandle
     {
         parent::__construct();
         $this->setMpesaController($m_pesa_controller);
-
-        $this->routes = [
-            "home" => [
-                'context' => 'Home',
-                'fun' => 'goToHome'
-            ],
-            "Account" => ['fun' => 'viewAccount'],
-            "Balance" => ['fun' => 'checkBalance'],
-            "Leaders Board" => ['fun' => 'goToLeadersBoard'],
-            "About" => ['fun' => 'goToAbout'],
-            "FAQ" => ['fun' => 'viewFAQ'],
-        ];
+        $this->routes = $this->getMenu();
     }
 
-    /**
-     * @throws \Throwable
-     */
-    public function handleChatMessage($text = null): void
-    {
-        if (empty($this->getChat()->storage()->get('app_context'))) {
-
-            foreach ($this->routes as $key => $route) {
-                //no context set
-                if (strcasecmp($key, $text) === 0) {
-                    //set ap context
-                    $this->getChat()->storage()->set('app_context', $text);
-
-                    //get executable
-                    $function = $route['fun'];
-                    if (method_exists($this, $function)) {
-                        $this->$function($text);
-                        break;
-                    }
-                }
-            }
-        } else {
-            $app_context = $this->getChat()->storage()->get('app_context');
-
-
-            switch ($app_context) {
-                case 'Home':
-                    $this->goToHome($text);
-                    break;
-                default;
-                    $this->getChat()->message("app context is unknown")->send();
-                    break;
-
-            }
-        }
-    }
-
-    /**
-     * @throws \Throwable
-     */
     public function handle(Request $request, TelegraphBot $bot): void
     {
-        parent::handle($request, $bot);
+        $chat = null;
+        $name_has_private = false;
+
+        if ($request->has('message')) {
+            $chat_id = $request->get('message')['from']['id'];
+            $chat = TelegraphChat::where('chat_id', $chat_id)->first();
+            $name_has_private = str_contains($chat->name, 'private');
+        }
+
+        if ($name_has_private) {
+            if (collect($request['message'])->has('text')) {
+                parent::handle($request, $bot);
+            } else {
+                $chat->message("could not get text")->send();
+            }
+        } else {
+            parent::handle($request, $bot);
+        }
+
     }
 
+    public function handleChatMessage($text = null): void
+    {
+        $application_context = $this->getChat()->storage()->get('application_context');
 
-    /**
-     * @throws \Throwable
-     */
+        if ($application_context == null) {
+            $this->getChat()->storage()->set('application_context', 'Home');
+        }
+
+        switch ($application_context) {
+            case 'Home':
+                $this->goToHome($text);
+                break;
+            default:
+                $this->getChat()->storage()->set('application_context', 'Home');
+                $this->goToHome();
+        }
+
+    }
+
+    public function getMenu(): array
+    {
+        $menuFile = __DIR__ . '/Data/menu.csv';
+        $data = [];
+
+
+        if (($handle = fopen($menuFile, 'r')) !== false) {
+            // Get the header row
+            $header = fgetcsv($handle, 1000, ',');
+
+            // Loop through each row in the CSV file
+            while (($row = fgetcsv($handle, 1000, ',')) !== false) {
+                // Combine the header with each row to form an associative array
+                $data[] = array_combine($header, $row);
+            }
+
+            // Close the file
+            fclose($handle);
+        }
+
+        return $data;
+    }
+
     protected function onFailure(\Throwable $throwable): void
     {
         if ($throwable instanceof NotFoundHttpException) {
@@ -103,5 +110,6 @@ class TelegramWebHookHandler extends \DefStudio\Telegraph\Handlers\WebhookHandle
         $this->reply('Option not available');
     }
 }
+
 
 

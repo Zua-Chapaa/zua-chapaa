@@ -48,6 +48,8 @@ Route::get('/faq', function () {
 });
 
 
-Route::any('/mpesa/callback', [MpesaController::class, 'mpesa_callback']);
+Route::any('/mpesa/callback/{chat}', [MpesaController::class, 'mpesa_callback']);
 
 Route::get('/Schedule', \App\Http\Controllers\TelegramController::class);
+
+Route::get('/handle', [\App\Telegram\TelegramWebHookHandler::class, 'handle']);

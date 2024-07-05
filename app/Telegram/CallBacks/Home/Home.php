@@ -2,8 +2,8 @@
 
 namespace App\Telegram\CallBacks\Home;
 
+use App\Models\User;
 use App\Telegram\CallBacks\GetChat;
-use Illuminate\Support\Stringable;
 
 trait Home
 {
@@ -21,24 +21,13 @@ trait Home
         $this?->getChat()->message("Please Enter your number to proceed")->send();
     }
 
-    public function invalid_phone_number(): void
-    {
-        //enquire to continue
-        if ($this->data->get('subscription_option') == 'Try Again') {
-            $this->select_plan();
-        } else {
-            $this->msg("Subscription canceled");
-            $this->getChat()->storage()->set('user_context', "phone_number_request_mode");
-            $this?->getChat()->message("Home")->send();
-        }
-    }
-
-    public function validateNumber(Stringable $text): mixed
+    public function validateNumber($text): mixed
     {
         $text = (string)$text;
 
         $patterns = [
-            '/^2547\d{8}$/'          // 2547********
+            '/^2547\d{8}$/',       // 2547********
+            '/^07\d{8}$/'          // 2547********
         ];
 
         // Check if the phone number matches any of the patterns
@@ -52,4 +41,39 @@ trait Home
         // If the phone number doesn't match any pattern, return false or an error message
         return false;
     }
+
+
+    public function invalid_phone_number(): void
+    {
+        //enquire to continue
+        if ($this->data->get('subscription_option') == 'Try Again') {
+            $this->select_plan();
+        } else {
+            $this->msg("Subscription canceled");
+            $this->getChat()->storage()->set('user_context', "");
+        }
+    }
+
+    public function has_active_subscription(): bool
+    {
+        $user = User::where('telegram_id', $this->getChat()->id)->first();
+        if ($user->active_subscription != null) {
+            return true;
+        }
+        return false;
+    }
+
+    public function cancel_active_plan(): void
+    {
+        $user = User::where('telegram_id', $this->getChat()->id)->first();
+        $user->active_subscription = null;
+        $user->save();
+        $this->msg("Subscription cancelled");
+    }
+
+    public function start_trivia(): void
+    {
+        $this->msg("beginning trivia");
+    }
+
 }

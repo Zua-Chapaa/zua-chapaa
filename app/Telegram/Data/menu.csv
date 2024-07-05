@@ -1,7 +1,7 @@
-command,name
-Home,Home
-Account,Account
-Balance,Balance
-Leaders_Board,Leaders Board
-About,About
-Faq,FAQs
+command,name,user_context,level_1_context,level_2_context,level_3_context,level_4_context,level_5_context
+Home,Home,subscribing,,,,,
+Account,Account,,,,,,
+Balance,Balance,,,,,,
+Leaders_Board,Leaders Board,,,,,,
+About,About,,,,,,
+Faq,FAQs,,,,,,

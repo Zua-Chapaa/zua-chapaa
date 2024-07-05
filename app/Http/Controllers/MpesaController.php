@@ -15,20 +15,20 @@ class MpesaController extends Controller
 
     public function sendRequest(TelegraphChat $chat, Stringable $text): void
     {
-//        //get authorisation key
-//        $encoded_string = $this->basicAuthorisation($chat);
-//
-//        //decode response
-//        $response = json_decode($this->getAuthorisation($encoded_string));
-//
-//        //get access token
-//        $access_token = $response->access_token;
-//
-//        //Send request
-//        $response = $this->makePaymentRequest($access_token, $chat, $text);
-//
-//        //decode response
-//        $response_parsed = json_decode($response);
+        //get authorisation key
+        $encoded_string = $this->basicAuthorisation($chat);
+
+        //decode response
+        $response = json_decode($this->getAuthorisation($encoded_string));
+
+        //get access token
+        $access_token = $response->access_token;
+
+        //Send request
+        $response = $this->makePaymentRequest($access_token, $chat, $text);
+
+        //decode response
+        $response_parsed = json_decode($response);
 
         //make an order matching request
         $user = User::where('telegram_id', $chat->id)->first();
@@ -98,9 +98,8 @@ class MpesaController extends Controller
         return $response;
     }
 
-    public function mpesa_callback(Request $request, $by_pass = false): void
+    public function mpesa_callback(Request $request, TelegraphChat $chat, $by_pass = false): void
     {
-        $chat = TelegraphChat::where("id", 1)->first();
         $order = Order::where('telegram_chat_id', $chat->id)
             ->where('status', 'pending')
             ->first();
@@ -114,8 +113,8 @@ class MpesaController extends Controller
             $order->save();
             $user->save();
 
-            //reset user context
-            $chat->storage()->set('app_context', "");
+            $chat->message("Order completed")->send();
+            $chat->message("You are currently on $user->active_subscription plan")->send();
         }
     }
 }
