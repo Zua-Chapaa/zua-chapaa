@@ -7,7 +7,6 @@
     "require": {
         "php": "^8.2",
         "ext-curl": "*",
-        "danog/madelineproto": "*",
         "defstudio/telegraph": "^1.48",
         "inertiajs/inertia-laravel": "^1.0",
         "laravel/framework": "^11.9",

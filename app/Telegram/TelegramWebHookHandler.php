@@ -5,6 +5,7 @@ namespace App\Telegram;
 use App\Http\Controllers\MpesaController;
 use App\Telegram\CallBacks\GetChat;
 use App\Telegram\CallBacks\HandleChatMessage;
+use App\Telegram\CallBacks\Home\GroupAnswer;
 use App\Telegram\CallBacks\Home\Home;
 use App\Telegram\CallBacks\Start;
 use App\Telegram\CallBacks\TelegramHandler;
@@ -21,6 +22,7 @@ class TelegramWebHookHandler extends WebhookHandler
     use HandleChatMessage;
     use message;
     use GetChat;
+    use GroupAnswer;
 
     //Home
     use Home;
@@ -38,6 +40,7 @@ class TelegramWebHookHandler extends WebhookHandler
     {
         $chat = null;
         $name_has_private = false;
+
 
         if ($request->has('message')) {
             $chat_id = $request->get('message')['from']['id'];
@@ -60,6 +63,7 @@ class TelegramWebHookHandler extends WebhookHandler
     public function handleChatMessage($text = null): void
     {
         $application_context = $this->getChat()->storage()->get('application_context');
+
 
         if ($application_context == null) {
             $this->getChat()->storage()->set('application_context', 'Home');
@@ -98,6 +102,7 @@ class TelegramWebHookHandler extends WebhookHandler
 
         return $data;
     }
+
 
     protected function onFailure(\Throwable $throwable): void
     {

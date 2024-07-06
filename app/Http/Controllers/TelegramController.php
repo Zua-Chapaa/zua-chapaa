@@ -22,16 +22,14 @@ class TelegramController extends Controller
 
             $question = Questions::find($active_questions->id);
 
-            $msg = $chat->message($question->question)
+            $resp = $chat->message($question->question)
                 ->keyboard(Keyboard::make()
-                    ->row([Button::make("$question->Choice_1")->action('')->param('plan', 'hourly')])
-                    ->row([Button::make("$question->Choice_2")->action('select_plan')->param('plan', 'hourly')])
-                    ->row([Button::make("$question->Choice_3")->action('select_plan')->param('plan', 'hourly')])
-                    ->row([Button::make("$question->Choice_4")->action('select_plan')->param('plan', 'hourly')])
-                )
-                ->send();
+                    ->row([Button::make("$question->Choice_1")->action('ans_question')->param('ans', 'Choice_1')])
+                    ->row([Button::make("$question->Choice_2")->action('ans_question')->param('ans', 'Choice_2')])
+                    ->row([Button::make("$question->Choice_3")->action('ans_question')->param('ans', 'Choice_3')])
+                    ->row([Button::make("$question->Choice_4")->action('ans_question')->param('ans', 'Choice_4')])
+                )->send();
 
-            dd($msg);
 
         } else {
             $active_session->Active = 0;
@@ -89,4 +87,6 @@ class TelegramController extends Controller
             return null;
         }
     }
+
+
 }
