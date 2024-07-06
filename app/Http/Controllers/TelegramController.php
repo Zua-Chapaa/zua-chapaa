@@ -10,17 +10,10 @@ use DefStudio\Telegraph\Keyboard\Keyboard;
 use DefStudio\Telegraph\Models\TelegraphChat;
 use Illuminate\Support\Facades\DB;
 
-if (!file_exists('madeline/madeline.php')) {
-    copy('https://phar.madelineproto.xyz/madeline.php', 'madeline.php');
-}
-
-require_once 'madeline.php';
-
 class TelegramController extends Controller
 {
     public function __invoke(): void
     {
-        $madeline = $this->import_madeline();
         $chat = TelegraphChat::where('name', '[supergroup] Shikisha Kakitu')->first();
         $active_session = $this->active_session();
         $active_questions = $this->active_question($active_session);
@@ -96,16 +89,4 @@ class TelegramController extends Controller
             return null;
         }
     }
-
-    public function import_madeline(): true
-    {
-        $MadelineProto = new \danog\MadelineProto\API('session.madeline');
-
-        if (!file_exists('madeline.php')) {
-            copy('https://phar.madelineproto.xyz/madeline.php', 'madeline.php');
-        }
-
-        return true;
-    }
-
 }
