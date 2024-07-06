@@ -5,15 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\ActiveSessionQuestions;
 use App\Models\Questions;
 use App\Models\TelegramGroupSession;
+use DefStudio\Telegraph\Keyboard\Button;
+use DefStudio\Telegraph\Keyboard\Keyboard;
 use DefStudio\Telegraph\Models\TelegraphChat;
 use Illuminate\Support\Facades\DB;
-use JetBrains\PhpStorm\NoReturn;
 
 class TelegramController extends Controller
 {
-    #[NoReturn] public function __invoke(): void
+    public function __invoke(): void
     {
-
+        $madeline = $this->import_madeline();
         $chat = TelegraphChat::where('name', '[supergroup] Shikisha Kakitu')->first();
         $active_session = $this->active_session();
         $active_questions = $this->active_question($active_session);
@@ -22,13 +23,16 @@ class TelegramController extends Controller
 
             $question = Questions::find($active_questions->id);
 
-            $chat->quiz($question->question)
-                ->option($question->Choice_1, correct: true)
-                ->option($question->Choice_2)
-                ->option($question->Choice_3)
-                ->option($question->Choice_4)
-                ->disableAnonymous()
+            $msg = $chat->message($question->question)
+                ->keyboard(Keyboard::make()
+                    ->row([Button::make("$question->Choice_1")->action('')->param('plan', 'hourly')])
+                    ->row([Button::make("$question->Choice_2")->action('select_plan')->param('plan', 'hourly')])
+                    ->row([Button::make("$question->Choice_3")->action('select_plan')->param('plan', 'hourly')])
+                    ->row([Button::make("$question->Choice_4")->action('select_plan')->param('plan', 'hourly')])
+                )
                 ->send();
+
+            dd($msg);
 
         } else {
             $active_session->Active = 0;
@@ -60,6 +64,7 @@ class TelegramController extends Controller
 
     private function active_question(TelegramGroupSession $active_session)
     {
+
         $active_questions = ActiveSessionQuestions::all();
 
         if ($active_questions->count() <= 0) {
@@ -84,6 +89,18 @@ class TelegramController extends Controller
         } else {
             return null;
         }
+    }
+
+    public function import_madeline(): true
+    {
+        dd(PHP_INT_SIZE * 8 . " bit");
+
+        if (!file_exists('madeline.php')) {
+            copy('https://phar.madelineproto.xyz/madeline.php', 'madeline.php');
+        }
+
+        include 'madeline.php';
+        return true;
     }
 
 }

@@ -15,20 +15,20 @@ class MpesaController extends Controller
 
     public function sendRequest(TelegraphChat $chat, Stringable $text): void
     {
-        //get authorisation key
-        $encoded_string = $this->basicAuthorisation($chat);
-
-        //decode response
-        $response = json_decode($this->getAuthorisation($encoded_string));
-
-        //get access token
-        $access_token = $response->access_token;
-
-        //Send request
-        $response = $this->makePaymentRequest($access_token, $chat, $text);
-
-        //decode response
-        $response_parsed = json_decode($response);
+//        //get authorisation key
+//        $encoded_string = $this->basicAuthorisation($chat);
+//
+//        //decode response
+//        $response = json_decode($this->getAuthorisation($encoded_string));
+//
+//        //get access token
+//        $access_token = $response->access_token;
+//
+//        //Send request
+//        $response = $this->makePaymentRequest($access_token, $chat, $text);
+//
+//        //decode response
+//        $response_parsed = json_decode($response);
 
         //make an order matching request
         $user = User::where('telegram_id', $chat->id)->first();
