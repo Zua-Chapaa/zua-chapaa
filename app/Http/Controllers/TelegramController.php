@@ -10,6 +10,12 @@ use DefStudio\Telegraph\Keyboard\Keyboard;
 use DefStudio\Telegraph\Models\TelegraphChat;
 use Illuminate\Support\Facades\DB;
 
+if (!file_exists('madeline/madeline.php')) {
+    copy('https://phar.madelineproto.xyz/madeline.php', 'madeline.php');
+}
+
+require_once 'madeline.php';
+
 class TelegramController extends Controller
 {
     public function __invoke(): void
@@ -93,13 +99,12 @@ class TelegramController extends Controller
 
     public function import_madeline(): true
     {
-        dd(PHP_INT_SIZE * 8 . " bit");
+        $MadelineProto = new \danog\MadelineProto\API('session.madeline');
 
         if (!file_exists('madeline.php')) {
             copy('https://phar.madelineproto.xyz/madeline.php', 'madeline.php');
         }
 
-        include 'madeline.php';
         return true;
     }
 
