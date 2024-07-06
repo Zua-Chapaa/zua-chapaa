@@ -3,6 +3,8 @@
 namespace App\Telegram\CallBacks\Home;
 
 use App\Models\Questions;
+use App\Models\TriviaEntry;
+use Illuminate\Support\Facades\Log;
 
 trait GroupAnswer
 {
@@ -19,20 +21,34 @@ trait GroupAnswer
         $is_user_correct = $this->is_user_correct($answer, $correct_answer, Questions::where('question', $question)->first());
         $time_to_ans = time();
         $set_ans = match ($correct_answer) {
-            'Choice_1' => $question->Choice_1,
-            'Choice_2' => $question->Choice_2,
-            'Choice_3' => $question->Choice_3,
-            'Choice_4' => $question->Choice_4,
+            'Choice_1' => Questions::where('question', $question)->first()->Choice_1,
+            'Choice_2' => Questions::where('question', $question)->first()->Choice_2,
+            'Choice_3' => Questions::where('question', $question)->first()->Choice_3,
+            'Choice_4' => Questions::where('question', $question)->first()->Choice_4,
             default => throw new \Exception("Error finding answer"),
         };
 
+        $data = [
+            $user_id,
+            $question,
+            $answer,
+            $set_ans,
+            $is_user_correct,
+            $time_to_ans
+        ];
 
-//            $TriviaEntry->user_id = $user_id;
-//            $TriviaEntry->question = $question;
-//            $TriviaEntry->answer = $answer;
-//            $TriviaEntry->set_ans = $set_ans;
-//            $TriviaEntry->is_user_correct = $is_user_correct;
-//            $TriviaEntry->time_to_ans = $time_to_ans;
+        Log::info(json_encode($data));
+
+        $TriviaEntry = new TriviaEntry();
+
+//        $TriviaEntry->user_id = $user_id;
+//        $TriviaEntry->question = $question;
+//        $TriviaEntry->answer = $answer;
+//        $TriviaEntry->set_ans = $set_ans;
+//        $TriviaEntry->is_user_correct = $is_user_correct;
+//        $TriviaEntry->time_to_ans = $time_to_ans;
+//
+//        $TriviaEntry->save();
     }
 
     public function extratc_answer(): string
