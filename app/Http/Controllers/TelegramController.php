@@ -37,7 +37,7 @@ class TelegramController extends Controller
         $this->question->save();
 
         $this->update_session();
-//        sleep(5);
+        sleep(5);
     }
 
     public function keyboardBuilder($question): Keyboard

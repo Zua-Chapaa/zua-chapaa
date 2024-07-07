@@ -19,7 +19,6 @@ const props = defineProps(['username'])
         <!--            </svg>-->
         <!--        </button>-->
     </nav>
-    {{ props }}
     <h1 class="px-[10px] text-[30px] text-white mb-[10px]">Account:</h1>
     <form class="mx-[10px] ">
         <ul>
