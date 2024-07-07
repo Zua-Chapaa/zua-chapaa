@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('trivia_entries', function (Blueprint $table) {
             $table->id();
-            $table->string('usr_id');
+            $table->string('user_id');
             $table->string('question');
             $table->string('answer');
             $table->string('set_ans');

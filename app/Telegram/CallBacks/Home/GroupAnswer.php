@@ -41,14 +41,14 @@ trait GroupAnswer
 
         $TriviaEntry = new TriviaEntry();
 
-//        $TriviaEntry->user_id = $user_id;
-//        $TriviaEntry->question = $question;
-//        $TriviaEntry->answer = $answer;
-//        $TriviaEntry->set_ans = $set_ans;
-//        $TriviaEntry->is_user_correct = $is_user_correct;
-//        $TriviaEntry->time_to_ans = $time_to_ans;
-//
-//        $TriviaEntry->save();
+        $TriviaEntry->user_id = $user_id;
+        $TriviaEntry->question = $question;
+        $TriviaEntry->answer = $answer;
+        $TriviaEntry->set_ans = $set_ans;
+        $TriviaEntry->is_user_correct = $is_user_correct;
+        $TriviaEntry->time_to_ans = $time_to_ans;
+
+        $TriviaEntry->save();
     }
 
     public function extratc_answer(): string

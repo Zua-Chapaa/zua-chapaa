@@ -40,10 +40,18 @@ class TelegramWebHookHandler extends WebhookHandler
     {
         $chat = null;
         $name_has_private = false;
-
+        $chat_id = null;
 
         if ($request->has('message')) {
             $chat_id = $request->get('message')['from']['id'];
+        }
+
+        if ($chat == null && $request->has('message')) {
+            parent::handle($request, $bot);
+            return;
+        }
+
+        if ($request->has('message')) {
             $chat = TelegraphChat::where('chat_id', $chat_id)->first();
             $name_has_private = str_contains($chat->name, 'private');
         }
