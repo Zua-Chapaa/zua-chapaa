@@ -2,7 +2,7 @@
 import {Head} from '@inertiajs/vue3';
 import TextInput from "@/Components/TextInput.vue";
 
-const props = defineProps(['username'])
+console.log("hi")
 
 </script>
 
