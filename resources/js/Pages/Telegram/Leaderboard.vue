@@ -16,11 +16,64 @@ import {Head} from '@inertiajs/vue3';
         <!--        </button>-->
     </nav>
     <h1 class="px-[10px] text-[30px] text-white mb-[10px]">Leaders Board:</h1>
+    <ul class="flex px-[10px] mb-[20px]">
+        <li class="active">Hourly</li>
+    </ul>
+    <div class="flex items-center justify-center text-white">
+        <div>
+            <div class="w-[100px] h-[100px] rounded overflow-auto" style="background-color: #6799c8">
+                <img src="/storage/system/icons8-user-50.png">
+            </div>
+            <p class="text-center my-[5px]">Username</p>
+            <p class="text-center my-[5px]">Ksh 100,000</p>
+        </div>
+    </div>
+    <ul>
+        <li v-for="item in 4" class="mx-[10px] flex mb-[20px]">
+            <div class="w-[40px] h-[40px] overflow-auto icon_number mr-[20px]">
+                {{ item + 1 }}
+            </div>
+            <div class="flex w-[100%] items-center">
+                <div class="w-[45px] h-[45px] p-[5px] rounded-[50%] bg-blue-300">
+                    <img src="/storage/system/icons8-user-50.png">
+                </div>
+                <div class="score-holder rounded px-[30px] bg-blue-400">
+                    <p class="text-white">Username</p>
+                </div>
+            </div>
+        </li>
+    </ul>
 </template>
 
 
 <style lang="scss">
 body {
-    @apply bg-gray-600
+    @apply bg-gray-600;
+
+    li {
+        @apply mx-[8px] px-[3px] py-[5px] rounded text-white;
+    }
+
+    .active {
+        background-color: dodgerblue;
+        color: whitesmoke;
+    }
+}
+
+.icon_number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid whitesmoke;
+    border-radius: 0 8px;
+    background-color: transparent;
+}
+
+.score-holder {
+    position: relative;
+    left: -20px;
+    z-index: -10;
+    width: calc(100% - 40px);
+    height: 30px;
 }
 </style>
