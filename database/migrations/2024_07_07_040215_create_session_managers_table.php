@@ -10,15 +10,8 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('trivia_entries', function (Blueprint $table) {
+        Schema::create('session_managers', function (Blueprint $table) {
             $table->id();
-            $table->string('user_id');
-            $table->string('question');
-            $table->string('answer');
-            $table->string('set_ans');
-            $table->boolean('is_user_correct');
-            $table->integer('time_to_answer');
-            $table->integer('session_id');
             $table->timestamps();
         });
     }
@@ -28,6 +21,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('trivia_entries');
+        Schema::dropIfExists('session_managers');
     }
 };

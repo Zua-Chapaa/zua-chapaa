@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ActiveSessionQuestions;
 use App\Models\Questions;
 use App\Models\TelegramGroupSession;
+use DefStudio\Telegraph\Concerns\HasStorage;
 use DefStudio\Telegraph\Keyboard\Button;
 use DefStudio\Telegraph\Keyboard\Keyboard;
 use DefStudio\Telegraph\Models\TelegraphChat;
@@ -12,15 +13,17 @@ use Illuminate\Support\Facades\DB;
 
 class TelegramController extends Controller
 {
+    use HasStorage;
+
     public function __invoke(): void
     {
         $chat = TelegraphChat::where('name', '[supergroup] Shikisha Kakitu')->first();
         $active_session = $this->active_session();
-        $active_questions = $this->active_question($active_session);
+        $active_question = $this->active_question($active_session);
 
-        if ($active_questions != null) {
+        if ($active_question != null) {
 
-            $question = Questions::find($active_questions->id);
+            $question = Questions::find($active_question->id);
 
             $resp = $chat->message($question->question)
                 ->keyboard(Keyboard::make()
@@ -30,6 +33,8 @@ class TelegramController extends Controller
                     ->row([Button::make("$question->Choice_4")->action('ans_question')->param('ans', 'Choice_4')])
                 )->send();
 
+            $active_question->msg_id = $resp->telegraphMessageId();
+            $active_session->save();
 
         } else {
             $active_session->Active = 0;
@@ -39,6 +44,8 @@ class TelegramController extends Controller
             // Truncate the table active_session_questions
             DB::statement('TRUNCATE TABLE active_session_questions');
         }
+
+
     }
 
     private function active_session()
@@ -52,6 +59,8 @@ class TelegramController extends Controller
             $group_session->active = true;
 
             $group_session->save();
+
+            dump("starting session...");
 
             return $group_session;
         } else {
@@ -77,16 +86,26 @@ class TelegramController extends Controller
             }
         }
 
-        $active_question = ActiveSessionQuestions::where('telegram_group_session_id', $active_session->id)->where('sent', false)->first();
+        $active_question = ActiveSessionQuestions::
+        where('telegram_group_session_id', $active_session->id)
+            ->where('msg_id', null)
+            ->first();
 
         if ($active_question != null) {
-            $active_question->sent = true;
+            $active_question->time_sent = time();
             $active_question->save();
+
             return $active_question;
         } else {
             return null;
         }
     }
 
+    public function update_session($chat, $resp, $resp_timer)
+    {
+        $question_id = $resp->telegraphMessageId();
+        $timer_id = $resp->telegraphMessageId();
 
+        $chat->edit($timer_id)->message("4")->send();
+    }
 }

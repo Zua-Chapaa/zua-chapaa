@@ -14,7 +14,8 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('question_id');
             $table->unsignedBigInteger('telegram_group_session_id');
-            $table->boolean('sent')->default(false);
+            $table->integer('msg_id')->nullable();
+            $table->integer('timer_id')->nullable();
             $table->unsignedBigInteger('time_sent')->nullable();
             $table->timestamps();
         });

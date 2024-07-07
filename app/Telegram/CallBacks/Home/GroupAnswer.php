@@ -3,11 +3,14 @@
 namespace App\Telegram\CallBacks\Home;
 
 use App\Models\Questions;
+use App\Models\TelegramGroupSession;
 use App\Models\TriviaEntry;
-use Illuminate\Support\Facades\Log;
+use DefStudio\Telegraph\Concerns\HasStorage;
 
 trait GroupAnswer
 {
+    use HasStorage;
+
     /**
      * @throws \Exception
      */
@@ -28,16 +31,15 @@ trait GroupAnswer
             default => throw new \Exception("Error finding answer"),
         };
 
-        $data = [
-            $user_id,
-            $question,
-            $answer,
-            $set_ans,
-            $is_user_correct,
-            $time_to_ans
-        ];
+        $answer = match ($answer) {
+            'Choice_1' => Questions::where('question', $question)->first()->Choice_1,
+            'Choice_2' => Questions::where('question', $question)->first()->Choice_2,
+            'Choice_3' => Questions::where('question', $question)->first()->Choice_3,
+            'Choice_4' => Questions::where('question', $question)->first()->Choice_4,
+            default => throw new \Exception("Error finding answer"),
+        };
 
-        Log::info(json_encode($data));
+        $session = TelegramGroupSession::where('Active', 1)->first()->id;
 
         $TriviaEntry = new TriviaEntry();
 
@@ -46,7 +48,8 @@ trait GroupAnswer
         $TriviaEntry->answer = $answer;
         $TriviaEntry->set_ans = $set_ans;
         $TriviaEntry->is_user_correct = $is_user_correct;
-        $TriviaEntry->time_to_ans = $time_to_ans;
+        $TriviaEntry->time_to_answer = $time_to_ans;
+        $TriviaEntry->session_id = $session;
 
         $TriviaEntry->save();
     }
@@ -68,12 +71,11 @@ trait GroupAnswer
 
     public function is_user_correct(string $answer, $correct_answer, Questions $question): bool
     {
-
         $set_ans = match ($correct_answer) {
-            'Choice_1' => $question->Choice_1,
-            'Choice_2' => $question->Choice_2,
-            'Choice_3' => $question->Choice_3,
-            'Choice_4' => $question->Choice_4,
+            'Choice_1' => $question->Answer,
+            'Choice_2' => $question->Answer,
+            'Choice_3' => $question->Answer,
+            'Choice_4' => $question->Answer,
             default => throw new \Exception("Error finding answer"),
         };
 
