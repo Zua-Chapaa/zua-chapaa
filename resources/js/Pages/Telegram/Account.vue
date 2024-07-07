@@ -1,9 +1,6 @@
 <script setup>
 import {Head} from '@inertiajs/vue3';
 import TextInput from "@/Components/TextInput.vue";
-
-console.log("hi")
-
 </script>
 
 <template>
