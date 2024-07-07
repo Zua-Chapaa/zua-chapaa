@@ -1,6 +1,9 @@
 <script setup>
 import {Head} from '@inertiajs/vue3';
 import TextInput from "@/Components/TextInput.vue";
+
+const props = defineProps(['username'])
+
 </script>
 
 <template>
@@ -16,6 +19,7 @@ import TextInput from "@/Components/TextInput.vue";
         <!--            </svg>-->
         <!--        </button>-->
     </nav>
+    {{ props }}
     <h1 class="px-[10px] text-[30px] text-white mb-[10px]">Account:</h1>
     <form class="mx-[10px] ">
         <ul>

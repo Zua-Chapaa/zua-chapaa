@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\MpesaController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -25,9 +26,7 @@ Route::middleware([
     })->name('dashboard');
 });
 
-Route::get('/account/{TelegraphChatID}', function ($TelegraphChatID) {
-    return Inertia::render('Telegram/Account');
-});
+Route::get('/account/{TelegraphChatID}', [AccountController::class, 'account'])->name('account');
 
 
 Route::get('/balance/{TelegraphChatID}', function ($TelegraphChatID) {

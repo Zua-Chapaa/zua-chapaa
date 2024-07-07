@@ -5,107 +5,162 @@ namespace App\Http\Controllers;
 use App\Models\ActiveSessionQuestions;
 use App\Models\Questions;
 use App\Models\TelegramGroupSession;
+use App\Models\TriviaEntry;
 use DefStudio\Telegraph\Concerns\HasStorage;
 use DefStudio\Telegraph\Keyboard\Button;
 use DefStudio\Telegraph\Keyboard\Keyboard;
 use DefStudio\Telegraph\Models\TelegraphChat;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @method groupSession()
+ */
 class TelegramController extends Controller
 {
     use HasStorage;
 
+    public TelegraphChat $chat;
+    public TelegramGroupSession $groupSession;
+    public ActiveSessionQuestions $question;
+
+    public function __construct()
+    {
+        $this->chat = TelegraphChat::where('name', '[supergroup] Shikisha Kakitu')->first();
+        $this->groupSession = $this->setGroupSession();
+        $this->question = $this->setActiveQuestion();
+    }
+
     public function __invoke(): void
     {
-        $chat = TelegraphChat::where('name', '[supergroup] Shikisha Kakitu')->first();
-        $active_session = $this->active_session();
-        $active_question = $this->active_question($active_session);
+        $resp = $this->send_question();
+        $this->question->msg_id = $resp->telegraphMessageId();
+        $this->question->save();
 
-        if ($active_question != null) {
-
-            $question = Questions::find($active_question->id);
-
-            $resp = $chat->message($question->question)
-                ->keyboard(Keyboard::make()
-                    ->row([Button::make("$question->Choice_1")->action('ans_question')->param('ans', 'Choice_1')])
-                    ->row([Button::make("$question->Choice_2")->action('ans_question')->param('ans', 'Choice_2')])
-                    ->row([Button::make("$question->Choice_3")->action('ans_question')->param('ans', 'Choice_3')])
-                    ->row([Button::make("$question->Choice_4")->action('ans_question')->param('ans', 'Choice_4')])
-                )->send();
-
-            $active_question->msg_id = $resp->telegraphMessageId();
-            $active_session->save();
-
-        } else {
-            $active_session->Active = 0;
-            $active_session->running_time = time();
-            $active_session->save();
-
-            // Truncate the table active_session_questions
-            DB::statement('TRUNCATE TABLE active_session_questions');
-        }
-
-
+        $this->update_session();
+//        sleep(5);
     }
 
-    private function active_session()
+    public function keyboardBuilder($question): Keyboard
     {
-        $active_telegram_group_session = TelegramGroupSession::where('Active', true)->first();
-
-        if ($active_telegram_group_session == null || ($active_telegram_group_session->count() == 0)) {
-            $group_session = new TelegramGroupSession();
-
-            $group_session->timestamp = time();
-            $group_session->active = true;
-
-            $group_session->save();
-
-            dump("starting session...");
-
-            return $group_session;
-        } else {
-            return $active_telegram_group_session;
-        }
+        return Keyboard::make()
+            ->row([Button::make("$question->Choice_1")->action('ans_question')->param('ans', 'Choice_1')])
+            ->row([Button::make("$question->Choice_2")->action('ans_question')->param('ans', 'Choice_2')])
+            ->row([Button::make("$question->Choice_3")->action('ans_question')->param('ans', 'Choice_3')])
+            ->row([Button::make("$question->Choice_4")->action('ans_question')->param('ans', 'Choice_4')]);
     }
 
-    private function active_question(TelegramGroupSession $active_session)
+    public function send_question()
     {
+        $question = Questions::find($this->question->question_id);
+        $this->clear_questions();
 
-        $active_questions = ActiveSessionQuestions::all();
+        return $this->chat
+            ->message($question->question)
+            ->keyboard($this->keyboardBuilder($question))->send();
+    }
 
-        if ($active_questions->count() <= 0) {
-            $questions = Questions::inRandomOrder()->limit(200)->get();
-
-            foreach ($questions as $question) {
-                $active_question_temp = new ActiveSessionQuestions();
-
-                $active_question_temp->question_id = $question->id;
-                $active_question_temp->telegram_group_session_id = $active_session->id;
-
-                $active_question_temp->save();
+    public function clear_questions()
+    {
+        $sent_questions = ActiveSessionQuestions::where('msg_id', '<>', null)->get();
+        if ($sent_questions->count() > 0) {
+            foreach ($sent_questions as $sent_question) {
+                $this->chat->deleteKeyboard($sent_question->msg_id)->send();
+                $this->chat->deleteMessage($sent_question->msg_id)->send();
             }
         }
+    }
 
-        $active_question = ActiveSessionQuestions::
-        where('telegram_group_session_id', $active_session->id)
+    public function update_session(): void
+    {
+        $stats = json_decode($this->groupSession->stats);
+        $current = $stats->timer;
+        $set = $current - 1;
+
+        if ($set <= 0)
+            $stats->timer = 7;
+        else
+            $stats->timer = $set;
+
+        $this->groupSession->stats = json_encode($stats);
+        $this->groupSession->save();
+    }
+
+    public function setGroupSession()
+    {
+        $group_session = TelegramGroupSession::where('Active', true)->first();
+
+        if (is_null($group_session)) {
+            $group_session = TelegramGroupSession::create([
+                'timestamp' => time(),
+                'active' => true,
+                'stats' => json_encode([
+                    'timer' => 7,
+                    'msg_id' => null,
+                    'question_id' => null
+                ])
+            ]);
+        }
+
+        return $group_session;
+    }
+
+    public function preLoadQuestions(): void
+    {
+        $questions = Questions::inRandomOrder()->limit(200)->get();
+
+        foreach ($questions as $question) {
+            ActiveSessionQuestions::create([
+                'question_id' => $question->id,
+                'telegram_group_session_id' => $this->groupSession->id
+            ]);
+        }
+    }
+
+    public function setActiveQuestion()
+    {
+        $all_active_questions = ActiveSessionQuestions::all();
+
+        if ($all_active_questions->count() == 0) {
+            $this->preLoadQuestions();
+        }
+
+        $active_question = ActiveSessionQuestions::where('telegram_group_session_id', $this->groupSession->id)
             ->where('msg_id', null)
             ->first();
 
-        if ($active_question != null) {
-            $active_question->time_sent = time();
-            $active_question->save();
+        if (is_null($active_question) && (ActiveSessionQuestions::all())->count() > 0) {
+            $this->closeSession();
 
-            return $active_question;
-        } else {
-            return null;
+            $active_question = ActiveSessionQuestions::where('telegram_group_session_id', $this->groupSession->id)
+                ->where('msg_id', null)
+                ->first();
         }
+
+        $active_question->time_sent = time();
+        $active_question->save();
+
+        return $active_question;
     }
 
-    public function update_session($chat, $resp, $resp_timer)
+    public function closeSession(): void
     {
-        $question_id = $resp->telegraphMessageId();
-        $timer_id = $resp->telegraphMessageId();
+        $this->tally();
+        $this->clear_questions();
+        DB::statement('TRUNCATE TABLE active_session_questions');
+        $this->groupSession->Active = false;
+        $this->groupSession->running_time = time();
+        $this->groupSession->save();
+        $this->groupSession = $this->setGroupSession();
+        $this->preLoadQuestions();
+        $resp = $this->chat->message("New Session Starting in 2 min....")->send();
+        $text_id = $resp->telegraphMessageId();
+//        sleep(10);
+        $this->chat->deleteMessage($text_id)->send();
 
-        $chat->edit($timer_id)->message("4")->send();
+    }
+
+    public function tally()
+    {
+        dump(TriviaEntry::all());
     }
 }
