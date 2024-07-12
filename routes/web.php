@@ -71,3 +71,5 @@ Route::any('/mpesa/callback/{chat}', [MpesaController::class, 'mpesa_callback'])
 Route::get('/Schedule', \App\Http\Controllers\TelegramController::class);
 
 Route::get('/handle', [\App\Telegram\TelegramWebHookHandler::class, 'handle']);
+
+include_once "Admin/admin.php";

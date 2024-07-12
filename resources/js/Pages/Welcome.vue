@@ -10,14 +10,10 @@ import {Head, Link} from '@inertiajs/vue3';
         <Link class="btn btn-primary mb-4" :href="route('dashboard')">Account</Link>
         <Link class="btn btn-primary" :href="route('register')">Register</Link>
     </div>
-
-
 </template>
-
 
 <style lang="scss">
 body {
     @apply bg-gray-900;
 }
-
 </style>

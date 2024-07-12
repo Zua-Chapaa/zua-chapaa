@@ -5,12 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\ActiveSessionQuestions;
 use App\Models\Questions;
 use App\Models\TelegramGroupSession;
-use App\Models\TriviaEntry;
 use DefStudio\Telegraph\Concerns\HasStorage;
 use DefStudio\Telegraph\Keyboard\Button;
 use DefStudio\Telegraph\Keyboard\Keyboard;
 use DefStudio\Telegraph\Models\TelegraphChat;
-use Illuminate\Support\Facades\DB;
 
 /**
  * @method groupSession()
@@ -106,7 +104,7 @@ class TelegramController extends Controller
 
     public function preLoadQuestions(): void
     {
-        $questions = Questions::inRandomOrder()->limit(200)->get();
+        $questions = Questions::inRandomOrder()->limit(45)->get();
 
         foreach ($questions as $question) {
             ActiveSessionQuestions::create([
@@ -144,23 +142,17 @@ class TelegramController extends Controller
 
     public function closeSession(): void
     {
-        $this->tally();
         $this->clear_questions();
-        DB::statement('TRUNCATE TABLE active_session_questions');
-        $this->groupSession->Active = false;
-        $this->groupSession->running_time = time();
-        $this->groupSession->save();
-        $this->groupSession = $this->setGroupSession();
-        $this->preLoadQuestions();
-        $resp = $this->chat->message("New Session Starting in 2 min....")->send();
-        $text_id = $resp->telegraphMessageId();
-//        sleep(10);
-        $this->chat->deleteMessage($text_id)->send();
-
+        $resp = $this->chat->message("New Session Starting in 10 min....")->send();
+//        DB::statement('TRUNCATE TABLE active_session_questions');
+//        $this->groupSession->Active = false;
+//        $this->groupSession->running_time = time();
+//        $this->groupSession->save();
+//        $this->groupSession = $this->setGroupSession();
+//        $this->preLoadQuestions();
+//        $text_id = $resp->telegraphMessageId();
+//        $this->chat->deleteMessage($text_id)->send();
     }
 
-    public function tally()
-    {
-        dump(TriviaEntry::all());
-    }
+
 }
