@@ -13,9 +13,12 @@ defineProps({
     canResetPassword: Boolean,
     status: String,
 });
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
 
 const form = useForm({
-    phone: '',
+    _token: csrfToken,
+    email: '',
     password: '',
     remember: false,
 });
@@ -44,15 +47,15 @@ const submit = () => {
 
         <form @submit.prevent="submit" class="!rounded">
             <div>
-                <InputLabel for="email" value="Phone"/>
+                <InputLabel for="email" value="Email"/>
                 <TextInput
                     id="phone"
-                    v-model="form.phone"
-                    type="tel"
+                    v-model="form.email"
+                    type="email"
                     class="mt-1 block w-full h-[40px] px-[10px]"
                     required
                 />
-                <InputError class="mt-2" :message="form.errors.phone"/>
+                <InputError class="mt-2" :message="form.errors.email"/>
             </div>
 
             <div class="mt-4">

@@ -8,7 +8,6 @@ use App\Models\TelegramGroupSession;
 use DefStudio\Telegraph\Concerns\HasStorage;
 use DefStudio\Telegraph\Keyboard\Button;
 use DefStudio\Telegraph\Keyboard\Keyboard;
-use DefStudio\Telegraph\Models\TelegraphChat;
 
 /**
  * @method groupSession()
@@ -17,15 +16,15 @@ class TelegramController extends Controller
 {
     use HasStorage;
 
-    public TelegraphChat $chat;
+    public $chat;
     public TelegramGroupSession $groupSession;
     public ActiveSessionQuestions $question;
 
     public function __construct()
     {
-        $this->chat = TelegraphChat::where('name', '[supergroup] Shikisha Kakitu')->first();
-        $this->groupSession = $this->setGroupSession();
-        $this->question = $this->setActiveQuestion();
+//        $this->chat = TelegraphChat::where('name', '[supergroup] Shikisha Kakitu')->first();
+//        $this->groupSession = $this->setGroupSession();
+//        $this->question = $this->setActiveQuestion();
     }
 
     public function __invoke(): void
