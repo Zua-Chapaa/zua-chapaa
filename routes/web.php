@@ -41,19 +41,24 @@ Route::get('/leaderboard', function () {
 
     $session = TelegramGroupSession::where('active', "<>", true)->orderBy('created_at', 'desc')->first();
 
-    $topUsers = TriviaEntry::select('user_id',
-        DB::raw('COUNT(*) as points'))
-        ->where('is_user_correct', true)
-        ->where('session_id', $session->session_id)
-        ->groupBy('user_id')
-        ->orderByDesc('points')
-        ->limit(5)
-        ->get();
+    $results = DB::select("
+                SELECT
+                    chats.chat_id,
+                    chats.name,
+                    AVG(te.time_to_answer) as average_time,
+                    SUM(te.is_user_correct) as total
+                FROM trivia_entries te
+                JOIN telegraph_chats chats ON chats.chat_id = te.user_id
+                WHERE te.session_id = $session->id
+                GROUP BY chats.chat_id, chats.name
+                ORDER BY total DESC, average_time
+            ");
 
-    dd($topUsers);
+    $firstThreeResults = collect($results)->take(3);
 
-
-    return Inertia::render('Telegram/Leaderboard');
+    return Inertia::render('Telegram/Leaderboard', [
+        'top' => $firstThreeResults
+    ]);
 });
 
 

@@ -13,6 +13,7 @@ use DefStudio\Telegraph\Handlers\WebhookHandler;
 use DefStudio\Telegraph\Models\TelegraphBot;
 use DefStudio\Telegraph\Models\TelegraphChat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
@@ -38,40 +39,33 @@ class TelegramWebHookHandler extends WebhookHandler
 
     public function handle(Request $request, TelegraphBot $bot): void
     {
-        $chat = null;
-        $name_has_private = false;
-        $chat_id = null;
+        $chat_id = $request->has('message') ? $request->get('message')['from']['id'] : null;
+        $chat = !is_null($chat_id) ? TelegraphChat::where('chat_id', $chat_id)->first() : null;
+        $name_has_private = !is_null($chat) ? str_contains($chat->name, 'private') : null;
+        $mode = 0;
 
-        if ($request->has('message')) {
-            $chat_id = $request->get('message')['from']['id'];
-        }
+        if ($mode == 1) {
+            $chat = TelegraphChat::where('chat_id', $request['message']['chat']['id'])->first();
 
-        if ($chat == null && $request->has('message')) {
-            parent::handle($request, $bot);
-            return;
-        }
-
-        if ($request->has('message')) {
-            $chat = TelegraphChat::where('chat_id', $chat_id)->first();
-            $name_has_private = str_contains($chat->name, 'private');
-        }
-
-        if ($name_has_private) {
-            if (collect($request['message'])->has('text')) {
-                parent::handle($request, $bot);
-            } else {
-                $chat->message("could not get text")->send();
-            }
+            $resp = $chat->quiz("What's your favourite programming language?")
+                ->option('php', correct: true)
+                ->option('typescript')
+                ->option('rust')
+                ->validUntil(now()->addSecond(100))
+                ->disableAnonymous()
+                ->send();
+            Log::info($resp);
         } else {
-            parent::handle($request, $bot);
+            Log::info($request);
         }
 
+
+//        parent::handle($request, $bot);
     }
 
     public function handleChatMessage($text = null): void
     {
         $application_context = $this->getChat()->storage()->get('application_context');
-
 
         if ($application_context == null) {
             $this->getChat()->storage()->set('application_context', 'Home');
@@ -92,7 +86,6 @@ class TelegramWebHookHandler extends WebhookHandler
     {
         $menuFile = __DIR__ . '/Data/menu.csv';
         $data = [];
-
 
         if (($handle = fopen($menuFile, 'r')) !== false) {
             // Get the header row

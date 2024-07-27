@@ -64,11 +64,21 @@ trait HandleChatMessage
 
                 $user = User::where('telegram_id', $this->getChat()->id)->first();
 
-                $chat->message("You are currently on $user->active_subscription plan")
-                    ->keyboard(Keyboard::make()->row([
-                        Button::make('Begin Trivia')->action('start_trivia'),
-                        Button::make('Cancel Plan')->action('cancel_active_plan')
-                    ]))->send();
+                if (!is_null($user->name)) {
+                    $result = trim(str_replace('[private]', '', $user->name));
+                    $user->name = $result;
+                    $user->save();
+
+                    $chat->message("You are currently on $user->active_subscription plan")
+                        ->keyboard(Keyboard::make()->row([
+                            Button::make('Begin Trivia')->action('start_trivia'),
+                            Button::make('Cancel Plan')->action('cancel_active_plan')
+                        ]))->send();
+                } else {
+                    $chat->messga("Please Update your telegram username to proceed");
+                }
+
+
 
             } else {
                 $chat->storage()->set('user_context', 'subscribing');
@@ -79,8 +89,6 @@ trait HandleChatMessage
                     ]))->send();
             }
         }
-
-
 
 
     }

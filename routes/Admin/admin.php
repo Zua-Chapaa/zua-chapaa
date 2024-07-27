@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\QuestionsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -17,11 +19,7 @@ Route::middleware([
 ])->group(function () {
     Route::get('/users', [AccountController::class, 'get_all_users'])->name('users.index');
 
-    Route::get('/transactions', function () {
-        return Inertia::render('Application/Transactions/index');
-    })->name('transactions.index');
+    Route::get('/transactions', [OrderController::class, 'List_all_orders'])->name('transactions.index');
 
-    Route::get('/questions', function () {
-        return Inertia::render('Application/Questions/index');
-    })->name('questions.index');
+    Route::get('/questions', [QuestionsController::class, 'List_Questions'])->name('questions.index');
 });

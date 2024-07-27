@@ -15,20 +15,20 @@ class MpesaController extends Controller
 
     public function sendRequest(TelegraphChat $chat, Stringable $text): void
     {
-//        //get authorisation key
-//        $encoded_string = $this->basicAuthorisation($chat);
-//
-//        //decode response
-//        $response = json_decode($this->getAuthorisation($encoded_string));
-//
-//        //get access token
-//        $access_token = $response->access_token;
-//
-//        //Send request
-//        $response = $this->makePaymentRequest($access_token, $chat, $text);
-//
-//        //decode response
-//        $response_parsed = json_decode($response);
+//        get authorisation key
+        $encoded_string = $this->basicAuthorisation($chat);
+
+//        decode response
+        $response = json_decode($this->getAuthorisation($encoded_string));
+
+//        get access token
+        $access_token = $response->access_token;
+
+//        Send request
+        $response = $this->makePaymentRequest($access_token, $chat, $text);
+
+//        decode response
+        $response_parsed = json_decode($response);
 
         //make an order matching request
         $user = User::where('telegram_id', $chat->id)->first();
@@ -64,6 +64,7 @@ class MpesaController extends Controller
 
         $curl = curl_init();
 
+
         curl_setopt_array($curl, array(
             CURLOPT_URL => 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
             CURLOPT_RETURNTRANSFER => true,
@@ -82,7 +83,7 @@ class MpesaController extends Controller
                                    "PartyA":"' . $text . '",
                                    "PartyB":"' . env('BUSINESS_SHORT_CODE') . '",
                                    "PhoneNumber":"' . $text . '",
-                                   "CallBackURL": "https://zuachapaa.tipsmoto.co.ke/mpesa/callback",
+                                   "CallBackURL": "https://zuachapaa.tipsmoto.co.ke/mpesa/callback/1",
                                    "AccountReference":"Shikisha Kakitu LTD",
                                    "TransactionDesc":"Payment for ' . $text . ' Subscription"
                                 }',
@@ -97,24 +98,46 @@ class MpesaController extends Controller
         curl_close($curl);
         return $response;
     }
+//
+//    public function mpesa_callback(Request $request, TelegraphChat $chat, $by_pass = false): void
+//    {
+//        $order = Order::where('telegram_chat_id', $chat->id)
+//            ->where('status', 'pending')
+//            ->first();
+//
+//        if ($order) {
+//            $order->status = 'paid';
+//            $user = User::where('telegram_id', $chat->id)->first();
+//
+//            $user->active_subscription = $order->amount == 1 ? "Hourly" : "Daily";
+//
+//            $order->save();
+//            $user->save();
+//
+//            $chat->message("Order completed")->send();
+//            $chat->message("You are currently on $user->active_subscription plan")->send();
+//        }
+//    }
 
-    public function mpesa_callback(Request $request, TelegraphChat $chat, $by_pass = false): void
+    public function mpesa_callback(Request $request, $chat): void
     {
-        $order = Order::where('telegram_chat_id', $chat->id)
-            ->where('status', 'pending')
-            ->first();
+        $orders = Order::where('status', 'pending')->get();
 
-        if ($order) {
-            $order->status = 'paid';
-            $user = User::where('telegram_id', $chat->id)->first();
+        if (count($orders) > 0) {
+            foreach ($orders as $order) {
+                $order->status = 'paid';
+                $user = User::where('telegram_id', $order->telegram_chat_id)->first();
 
-            $user->active_subscription = $order->amount == 1 ? "Hourly" : "Daily";
+                $user->active_subscription = $order->amount == 1 ? "Hourly" : "Daily";
 
-            $order->save();
-            $user->save();
+                $order->save();
+                $user->save();
 
-            $chat->message("Order completed")->send();
-            $chat->message("You are currently on $user->active_subscription plan")->send();
+                $chat = TelegraphChat::find($order->telegram_chat_id);
+
+                $chat->message("Order completed")->send();
+                $chat->message("You are currently on $user->active_subscription plan")->send();
+            }
         }
     }
 }

@@ -16,8 +16,7 @@ trait MpesaGenerators
     public function data_generator(TelegraphChat $chat, Stringable $text): array
     {
         $businessShortCode = env('BUSINESS_SHORT_CODE');
-//        $timestamp = date("YmdHis");
-        $timestamp = 20160216165627;
+        $timestamp = date("YmdHis");
         $passKey = env('PASS_KEY');
         $amount = $chat->storage()->get('plan') == 'hourly' ? 1 : 2;
 

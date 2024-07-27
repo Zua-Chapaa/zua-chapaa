@@ -1,5 +1,8 @@
 <script setup>
 import {Head} from '@inertiajs/vue3';
+
+const props = defineProps(['top'])
+
 </script>
 
 <template>
@@ -24,21 +27,22 @@ import {Head} from '@inertiajs/vue3';
             <div class="w-[100px] h-[100px] rounded overflow-auto" style="background-color: #6799c8">
                 <img src="/storage/system/icons8-user-50.png">
             </div>
-            <p class="text-center my-[5px]">Username</p>
-            <p class="text-center my-[5px]">Ksh 100,000</p>
+            <p class="text-center my-[5px]">{{ top[0].name }}</p>
+            <p class="text-center my-[5px]">Ksh 500</p>
         </div>
     </div>
     <ul>
-        <li v-for="item in 4" class="mx-[10px] flex mb-[20px]">
+        <li v-for="(item, index)  in top" class="mx-[10px] flex mb-[20px]">
             <div class="w-[40px] h-[40px] overflow-auto icon_number mr-[20px]">
-                {{ item + 1 }}
+                {{ index + 1 }}
             </div>
             <div class="flex w-[100%] items-center">
                 <div class="w-[45px] h-[45px] p-[5px] rounded-[50%] bg-blue-300">
                     <img src="/storage/system/icons8-user-50.png">
                 </div>
-                <div class="score-holder rounded px-[30px] bg-blue-400">
-                    <p class="text-white">Username</p>
+                <div class="score-holder flex justify-between rounded px-[30px] bg-blue-400">
+                    <p class="text-white">{{ item.name }}</p>
+                    <p class="text-white">{{ item.total }}</p>
                 </div>
             </div>
         </li>

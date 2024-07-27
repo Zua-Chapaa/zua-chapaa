@@ -1,6 +1,5 @@
 <script setup>
 import {useForm} from "@inertiajs/vue3";
-import {onMounted} from "vue";
 import DashboardMenu from "@/Components/Appilcation/DashboardMenu.vue";
 
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -8,12 +7,9 @@ const logUser = useForm({
     _token: csrfToken,
 })
 
-const props = defineProps(['users'])
+const props = defineProps(['orders'])
 
 const currentUrl = window.location.href;
-
-onMounted(() => {
-})
 
 </script>
 
@@ -31,18 +27,16 @@ onMounted(() => {
                 <tr class="text-white">
                     <th scope="col">id</th>
                     <th scope="col">Username</th>
-                    <th scope="col">Mode</th>
-                    <th scope="col">Subscription</th>
-                    <th scope="col">Balance (Ksh)</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Status</th>
                 </tr>
                 </thead>
                 <tbody class="text-white">
-                <tr v-for="user in users">
-                    <th scope="row">{{ user.id }}</th>
-                    <td>{{ user.username ?? 'N/A' }}</td>
-                    <td>{{ user.mode }}</td>
-                    <td>{{ user.subscription }}</td>
-                    <td>{{ user.Balance }}</td>
+                <tr v-for="order in orders">
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.username }}</td>
+                    <td>{{ order.amount }}</td>
+                    <td>{{ order.status }}</td>
                 </tr>
                 </tbody>
             </table>

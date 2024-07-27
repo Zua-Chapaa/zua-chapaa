@@ -8,6 +8,9 @@ use App\Models\TelegramGroupSession;
 use DefStudio\Telegraph\Concerns\HasStorage;
 use DefStudio\Telegraph\Keyboard\Button;
 use DefStudio\Telegraph\Keyboard\Keyboard;
+use DefStudio\Telegraph\Models\TelegraphChat;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @method groupSession()
@@ -22,19 +25,24 @@ class TelegramController extends Controller
 
     public function __construct()
     {
-//        $this->chat = TelegraphChat::where('name', '[supergroup] Shikisha Kakitu')->first();
-//        $this->groupSession = $this->setGroupSession();
-//        $this->question = $this->setActiveQuestion();
+        $this->chat = TelegraphChat::where('name', '[supergroup] Shikisha Kakitu')->first();
+        $this->groupSession = $this->setGroupSession();
+        $this->question = $this->setActiveQuestion();
     }
 
     public function __invoke(): void
     {
         $resp = $this->send_question();
         $this->question->msg_id = $resp->telegraphMessageId();
-        $this->question->save();
+
+        if (!is_null($this->question)) {
+            $this->question->save();
+        } else {
+            Log::info("Empty");
+        }
 
         $this->update_session();
-        sleep(5);
+//        sleep(5);
     }
 
     public function keyboardBuilder($question): Keyboard
@@ -103,7 +111,7 @@ class TelegramController extends Controller
 
     public function preLoadQuestions(): void
     {
-        $questions = Questions::inRandomOrder()->limit(45)->get();
+        $questions = Questions::inRandomOrder()->limit(5)->get();
 
         foreach ($questions as $question) {
             ActiveSessionQuestions::create([
@@ -133,24 +141,29 @@ class TelegramController extends Controller
                 ->first();
         }
 
-        $active_question->time_sent = time();
-        $active_question->save();
+        if (!is_null($active_question)) {
+            $active_question->time_sent = time();
+            $active_question->save();
+        }
 
         return $active_question;
+
     }
 
     public function closeSession(): void
     {
         $this->clear_questions();
-        $resp = $this->chat->message("New Session Starting in 10 min....")->send();
-//        DB::statement('TRUNCATE TABLE active_session_questions');
-//        $this->groupSession->Active = false;
-//        $this->groupSession->running_time = time();
-//        $this->groupSession->save();
-//        $this->groupSession = $this->setGroupSession();
-//        $this->preLoadQuestions();
-//        $text_id = $resp->telegraphMessageId();
-//        $this->chat->deleteMessage($text_id)->send();
+        $resp = $this->chat->message("New Session Starting...")->send();
+        DB::statement('TRUNCATE TABLE active_session_questions');
+        $this->groupSession->Active = false;
+        $this->groupSession->running_time = time();
+        $this->groupSession->save();
+        $this->groupSession = $this->setGroupSession();
+        $this->preLoadQuestions();
+        $text_id = $resp->telegraphMessageId();
+        sleep(15);
+        $this->chat->deleteMessage($text_id)->send();
+        dd("done");
     }
 
 

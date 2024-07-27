@@ -4,10 +4,10 @@ namespace App\Telegram\CallBacks;
 
 use App\Models\User;
 use DefStudio\Telegraph\Concerns\HasStorage;
-use DefStudio\Telegraph\Keyboard\Button;
-use DefStudio\Telegraph\Keyboard\Keyboard;
 use DefStudio\Telegraph\Keyboard\ReplyButton;
 use DefStudio\Telegraph\Keyboard\ReplyKeyboard;
+use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Facades\Log;
 
 
 trait Start
@@ -15,24 +15,47 @@ trait Start
     use GetChat;
     use HasStorage;
 
-    public function start(): void
+    public function start(Request $request): void
     {
-        $telegram_id = $this->getChat()->id;
-        $user_generated = $this->bindUser($telegram_id);
+        $telegraphChat = $this->getChat();
+        Log::info($request);
 
-        if ($user_generated) {
-            $this->start_setup();
-
-            $this->getChat()->message('Please choose your language')
-                ->keyboard(Keyboard::make()
-                    ->row([
-                        Button::make('English')->action('select_language')->param('lang', 'English'),
-                        Button::make('Swahili')->action('select_language')->param('lang', 'Swahili'),
-                    ])
-                )->send();
-        }
-
+//        $telegraphChat->quiz("What's your favourite programming language?")
+//            ->option('php', correct: true)
+//            ->option('typescript')
+//            ->option('rust')
+//            ->explanation('We all love php, right?')
+//            ->validUntil(now()->addMinutes(5))
+//            ->send();
     }
+
+
+//    public function start(): void
+//    {
+//        $telegram_id = $this->getChat()->id;
+//        $user_generated = $this->bindUser($telegram_id);
+//        $name_has_private = str_contains($user_generated, 'private');
+//
+//        if ($name_has_private && $user_generated) {
+//            $this->start_setup();
+//
+//            $this->getChat()->message('Please choose your language')
+//                ->keyboard(Keyboard::make()
+//                    ->row([
+//                        Button::make('English')->action('select_language')->param('lang', 'English'),
+//                        Button::make('Swahili')->action('select_language')->param('lang', 'Swahili'),
+//                    ])
+//                )->send();
+//        } else {
+//            $this->getChat()->message('Please choose your language')
+//                ->keyboard(Keyboard::make()
+//                    ->row([
+//                        Button::make('English')->action('select_language')->param('lang', 'English'),
+//                        Button::make('Swahili')->action('select_language')->param('lang', 'Swahili'),
+//                    ])
+//                )->send();
+//        }
+//    }
 
     public function bindUser($telegram_id)
     {
@@ -67,11 +90,11 @@ trait Start
             ->replyKeyboard(
                 ReplyKeyboard::make()->buttons([
                     ReplyButton::make('Home'),
-//                    ReplyButton::make('Account')->webApp("https://zuachapaa.tipsmoto.co.ke/account/" . $this->getChat()->id),
+                    ReplyButton::make('Account')->webApp("https://zuachapaa.tipsmoto.co.ke/account/" . $this->getChat()->id),
                     ReplyButton::make('Balance')->webApp('https://zuachapaa.tipsmoto.co.ke/balance/' . $this->getChat()->id),
                     ReplyButton::make('Leaders Board')->webApp("https://zuachapaa.tipsmoto.co.ke/leaderboard"),
-//                    ReplyButton::make('About')->webApp('https://zuachapaa.tipsmoto.co.ke/about/'),
-//                    ReplyButton::make('FAQ')->webApp('https://zuachapaa.tipsmoto.co.ke/faq'),
+                    ReplyButton::make('About')->webApp('https://zuachapaa.tipsmoto.co.ke/about/'),
+                    ReplyButton::make('FAQ')->webApp('https://zuachapaa.tipsmoto.co.ke/faq'),
                 ])
             )
 
