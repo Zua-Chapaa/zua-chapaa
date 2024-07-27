@@ -13,7 +13,6 @@ use DefStudio\Telegraph\Handlers\WebhookHandler;
 use DefStudio\Telegraph\Models\TelegraphBot;
 use DefStudio\Telegraph\Models\TelegraphChat;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
@@ -42,25 +41,7 @@ class TelegramWebHookHandler extends WebhookHandler
         $chat_id = $request->has('message') ? $request->get('message')['from']['id'] : null;
         $chat = !is_null($chat_id) ? TelegraphChat::where('chat_id', $chat_id)->first() : null;
         $name_has_private = !is_null($chat) ? str_contains($chat->name, 'private') : null;
-        $mode = 0;
-
-        if ($mode == 1) {
-            $chat = TelegraphChat::where('chat_id', $request['message']['chat']['id'])->first();
-
-            $resp = $chat->quiz("What's your favourite programming language?")
-                ->option('php', correct: true)
-                ->option('typescript')
-                ->option('rust')
-                ->validUntil(now()->addSecond(100))
-                ->disableAnonymous()
-                ->send();
-            Log::info($resp);
-        } else {
-            Log::info($request);
-        }
-
-
-//        parent::handle($request, $bot);
+        parent::handle($request, $bot);
     }
 
     public function handleChatMessage($text = null): void

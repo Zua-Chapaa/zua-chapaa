@@ -6,8 +6,6 @@ use App\Models\User;
 use DefStudio\Telegraph\Concerns\HasStorage;
 use DefStudio\Telegraph\Keyboard\ReplyButton;
 use DefStudio\Telegraph\Keyboard\ReplyKeyboard;
-use GuzzleHttp\Psr7\Request;
-use Illuminate\Support\Facades\Log;
 
 
 trait Start
@@ -15,47 +13,32 @@ trait Start
     use GetChat;
     use HasStorage;
 
-    public function start(Request $request): void
+    public function start(): void
     {
-        $telegraphChat = $this->getChat();
-        Log::info($request);
+        $telegram_id = $this->getChat()->id;
+        $user_generated = $this->bindUser($telegram_id);
+        $name_has_private = str_contains($user_generated, 'private');
 
-//        $telegraphChat->quiz("What's your favourite programming language?")
-//            ->option('php', correct: true)
-//            ->option('typescript')
-//            ->option('rust')
-//            ->explanation('We all love php, right?')
-//            ->validUntil(now()->addMinutes(5))
-//            ->send();
+        if ($name_has_private && $user_generated) {
+            $this->start_setup();
+
+            $this->getChat()->message('Please choose your language')
+                ->keyboard(Keyboard::make()
+                    ->row([
+                        Button::make('English')->action('select_language')->param('lang', 'English'),
+                        Button::make('Swahili')->action('select_language')->param('lang', 'Swahili'),
+                    ])
+                )->send();
+        } else {
+            $this->getChat()->message('Please choose your language')
+                ->keyboard(Keyboard::make()
+                    ->row([
+                        Button::make('English')->action('select_language')->param('lang', 'English'),
+                        Button::make('Swahili')->action('select_language')->param('lang', 'Swahili'),
+                    ])
+                )->send();
+        }
     }
-
-
-//    public function start(): void
-//    {
-//        $telegram_id = $this->getChat()->id;
-//        $user_generated = $this->bindUser($telegram_id);
-//        $name_has_private = str_contains($user_generated, 'private');
-//
-//        if ($name_has_private && $user_generated) {
-//            $this->start_setup();
-//
-//            $this->getChat()->message('Please choose your language')
-//                ->keyboard(Keyboard::make()
-//                    ->row([
-//                        Button::make('English')->action('select_language')->param('lang', 'English'),
-//                        Button::make('Swahili')->action('select_language')->param('lang', 'Swahili'),
-//                    ])
-//                )->send();
-//        } else {
-//            $this->getChat()->message('Please choose your language')
-//                ->keyboard(Keyboard::make()
-//                    ->row([
-//                        Button::make('English')->action('select_language')->param('lang', 'English'),
-//                        Button::make('Swahili')->action('select_language')->param('lang', 'Swahili'),
-//                    ])
-//                )->send();
-//        }
-//    }
 
     public function bindUser($telegram_id)
     {
