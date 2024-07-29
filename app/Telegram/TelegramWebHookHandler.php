@@ -73,9 +73,12 @@ class TelegramWebHookHandler extends WebhookHandler
 
     private function handleQuizResponse(Request $request, TelegraphBot $bot)
     {
-        logger($request);
         if ($request->has('poll')) {
-//            logger($request);
+
+
+            $poll_id = $request->input('poll.id');
+            $poll_id = $request->input('poll.id');
+            logger();
         } else {
 //            logger($request);
         }
