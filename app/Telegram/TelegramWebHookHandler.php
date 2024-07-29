@@ -13,6 +13,7 @@ use DefStudio\Telegraph\Handlers\WebhookHandler;
 use DefStudio\Telegraph\Models\TelegraphBot;
 use DefStudio\Telegraph\Models\TelegraphChat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
@@ -41,7 +42,14 @@ class TelegramWebHookHandler extends WebhookHandler
         $chat_id = $request->has('message') ? $request->get('message')['from']['id'] : null;
         $chat = !is_null($chat_id) ? TelegraphChat::where('chat_id', $chat_id)->first() : null;
         $name_has_private = !is_null($chat) ? str_contains($chat->name, 'private') : null;
-        parent::handle($request, $bot);
+
+
+        if ($request->has('poll') || $request->has('poll_answer')) {
+            $this->handleQuizResponse($request, $bot);
+        } else {
+            Log::info("passed");
+//            parent::handle($request, $bot);
+        }
     }
 
     public function handleChatMessage($text = null): void
@@ -61,6 +69,16 @@ class TelegramWebHookHandler extends WebhookHandler
                 $this->goToHome();
         }
 
+    }
+
+    private function handleQuizResponse(Request $request, TelegraphBot $bot)
+    {
+        logger($request);
+        if ($request->has('poll')) {
+//            logger($request);
+        } else {
+//            logger($request);
+        }
     }
 
     public function getMenu(): array
@@ -96,6 +114,8 @@ class TelegramWebHookHandler extends WebhookHandler
 
         $this->reply('Option not available');
     }
+
+
 }
 
 

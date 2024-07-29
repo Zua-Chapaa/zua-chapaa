@@ -6,11 +6,9 @@ use App\Models\ActiveSessionQuestions;
 use App\Models\Questions;
 use App\Models\TelegramGroupSession;
 use DefStudio\Telegraph\Concerns\HasStorage;
-use DefStudio\Telegraph\Keyboard\Button;
-use DefStudio\Telegraph\Keyboard\Keyboard;
 use DefStudio\Telegraph\Models\TelegraphChat;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use JetBrains\PhpStorm\NoReturn;
 
 /**
  * @method groupSession()
@@ -21,76 +19,32 @@ class TelegramController extends Controller
 
     public $chat;
     public TelegramGroupSession $groupSession;
-    public ActiveSessionQuestions $question;
+    public ActiveSessionQuestions|null $question;
 
-    public function __construct()
+    #[NoReturn] public function __construct()
     {
-        $this->chat = TelegraphChat::where('name', '[supergroup] Shikisha Kakitu')->first();
-        $this->groupSession = $this->setGroupSession();
-        $this->question = $this->setActiveQuestion();
     }
 
     public function __invoke(): void
     {
-        $resp = $this->send_question();
-        $this->question->msg_id = $resp->telegraphMessageId();
+        $this->chat = TelegraphChat::where('name', '[supergroup] Shikisha Kakitu')->first();
+        $this->setGroupSession();
 
-        if (!is_null($this->question)) {
-            $this->question->save();
+        $this->question = ActiveSessionQuestions::where('telegram_group_session_id', $this->groupSession->id)
+            ->where('msg_id', null)
+            ->first();
+
+        if ($this->question == null) {
+            $this->closeSession();
+            dd("done");
         } else {
-            Log::info("Empty");
+            $this->send_question();
+            return;
         }
 
-        $this->update_session();
-//        sleep(5);
     }
 
-    public function keyboardBuilder($question): Keyboard
-    {
-        return Keyboard::make()
-            ->row([Button::make("$question->Choice_1")->action('ans_question')->param('ans', 'Choice_1')])
-            ->row([Button::make("$question->Choice_2")->action('ans_question')->param('ans', 'Choice_2')])
-            ->row([Button::make("$question->Choice_3")->action('ans_question')->param('ans', 'Choice_3')])
-            ->row([Button::make("$question->Choice_4")->action('ans_question')->param('ans', 'Choice_4')]);
-    }
-
-    public function send_question()
-    {
-        $question = Questions::find($this->question->question_id);
-        $this->clear_questions();
-
-        return $this->chat
-            ->message($question->question)
-            ->keyboard($this->keyboardBuilder($question))->send();
-    }
-
-    public function clear_questions()
-    {
-        $sent_questions = ActiveSessionQuestions::where('msg_id', '<>', null)->get();
-        if ($sent_questions->count() > 0) {
-            foreach ($sent_questions as $sent_question) {
-                $this->chat->deleteKeyboard($sent_question->msg_id)->send();
-                $this->chat->deleteMessage($sent_question->msg_id)->send();
-            }
-        }
-    }
-
-    public function update_session(): void
-    {
-        $stats = json_decode($this->groupSession->stats);
-        $current = $stats->timer;
-        $set = $current - 1;
-
-        if ($set <= 0)
-            $stats->timer = 7;
-        else
-            $stats->timer = $set;
-
-        $this->groupSession->stats = json_encode($stats);
-        $this->groupSession->save();
-    }
-
-    public function setGroupSession()
+    #[NoReturn] public function setGroupSession($callback = null)
     {
         $group_session = TelegramGroupSession::where('Active', true)->first();
 
@@ -99,14 +53,52 @@ class TelegramController extends Controller
                 'timestamp' => time(),
                 'active' => true,
                 'stats' => json_encode([
-                    'timer' => 7,
+                    'timer' => 1,
                     'msg_id' => null,
                     'question_id' => null
                 ])
             ]);
+
+            $this->groupSession = $group_session;
+
+            DB::statement('TRUNCATE TABLE active_session_questions');
+
+            $this->preLoadQuestions();
+
+        } else {
+            $this->groupSession = $group_session;
         }
 
-        return $group_session;
+//        dump($this->groupSession->id);
+//        $questions = ActiveSessionQuestions::all();
+//        foreach ($questions as $question) {
+//            dump($question->attributesToArray());
+//        }
+    }
+
+    public function send_question()
+    {
+        $counter = 0;
+        $counter_id = null;
+
+        $question = Questions::find($this->question->question_id);
+        $question_string = $question->question . "\n\n 🕰 7 seconds";
+
+
+        $build = $this->chat->quiz($question_string)
+            ->option($question->Choice_1, correct: true)
+            ->option($question->Choice_2)
+            ->option($question->Choice_3)
+            ->option($question->Choice_4)
+            ->validUntil(now()->addSecond(7))
+            ->disableAnonymous()
+            ->send();
+
+        $message_id = $build->telegraphMessageId();
+        $this->question->msg_id = $message_id;
+        $this->question->save();
+
+        sleep(7);
     }
 
     public function preLoadQuestions(): void
@@ -121,49 +113,29 @@ class TelegramController extends Controller
         }
     }
 
-    public function setActiveQuestion()
-    {
-        $all_active_questions = ActiveSessionQuestions::all();
-
-        if ($all_active_questions->count() == 0) {
-            $this->preLoadQuestions();
-        }
-
-        $active_question = ActiveSessionQuestions::where('telegram_group_session_id', $this->groupSession->id)
-            ->where('msg_id', null)
-            ->first();
-
-        if (is_null($active_question) && (ActiveSessionQuestions::all())->count() > 0) {
-            $this->closeSession();
-
-            $active_question = ActiveSessionQuestions::where('telegram_group_session_id', $this->groupSession->id)
-                ->where('msg_id', null)
-                ->first();
-        }
-
-        if (!is_null($active_question)) {
-            $active_question->time_sent = time();
-            $active_question->save();
-        }
-
-        return $active_question;
-
-    }
-
     public function closeSession(): void
     {
         $this->clear_questions();
-        $resp = $this->chat->message("New Session Starting...")->send();
+        $resp = $this->chat->message("Posting results")->send();
         DB::statement('TRUNCATE TABLE active_session_questions');
+
         $this->groupSession->Active = false;
         $this->groupSession->running_time = time();
         $this->groupSession->save();
-        $this->groupSession = $this->setGroupSession();
-        $this->preLoadQuestions();
+
         $text_id = $resp->telegraphMessageId();
         sleep(15);
         $this->chat->deleteMessage($text_id)->send();
-        dd("done");
+    }
+
+    public function clear_questions()
+    {
+        $sent_questions = ActiveSessionQuestions::where('msg_id', '<>', null)->get();
+        if ($sent_questions->count() > 0) {
+            foreach ($sent_questions as $sent_question) {
+                $this->chat->deleteMessage($sent_question->msg_id)->send();
+            }
+        }
     }
 
 

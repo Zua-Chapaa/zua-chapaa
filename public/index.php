@@ -1,5 +1,4 @@
 <?php
-die("hi");
 
 use Illuminate\Http\Request;
 

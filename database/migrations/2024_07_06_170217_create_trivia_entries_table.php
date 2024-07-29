@@ -12,11 +12,11 @@ return new class extends Migration {
     {
         Schema::create('trivia_entries', function (Blueprint $table) {
             $table->id();
-            $table->string('user_id');
+            $table->string('poll_id');
             $table->string('question');
-            $table->string('answer');
-            $table->string('set_ans');
-            $table->boolean('is_user_correct');
+            $table->string('question_answer');
+            $table->string('answer_user_id');
+            $table->string('user_answer');
             $table->integer('time_to_answer');
             $table->integer('session_id');
             $table->timestamps();

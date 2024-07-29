@@ -7,7 +7,12 @@ use Illuminate\Support\Facades\Schedule;
 //    $this->comment(Inspiring::quote());
 //})->purpose('Display an inspiring quote')->hourly();
 
-Schedule::call(new TelegramController)
+Schedule::call(function () {
+    for ($i = 0; $i < 6; $i++) {
+        (new TelegramController)->__invoke();
+        sleep(1);
+    }
+})
     ->name("Handle Groups")
     ->withoutOverlapping()
     ->everySecond();

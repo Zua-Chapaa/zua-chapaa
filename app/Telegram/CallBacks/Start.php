@@ -4,6 +4,8 @@ namespace App\Telegram\CallBacks;
 
 use App\Models\User;
 use DefStudio\Telegraph\Concerns\HasStorage;
+use DefStudio\Telegraph\Keyboard\Button;
+use DefStudio\Telegraph\Keyboard\Keyboard;
 use DefStudio\Telegraph\Keyboard\ReplyButton;
 use DefStudio\Telegraph\Keyboard\ReplyKeyboard;
 
@@ -17,7 +19,7 @@ trait Start
     {
         $telegram_id = $this->getChat()->id;
         $user_generated = $this->bindUser($telegram_id);
-        $name_has_private = str_contains($user_generated, 'private');
+        $name_has_private = str_contains($this->getChat()->name, 'private');
 
         if ($name_has_private && $user_generated) {
             $this->start_setup();

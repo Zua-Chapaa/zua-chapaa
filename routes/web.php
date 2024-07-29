@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -74,6 +73,11 @@ Route::get('/faq', function () {
 Route::any('/mpesa/callback/{chat}', [MpesaController::class, 'mpesa_callback']);
 
 Route::get('/Schedule', \App\Http\Controllers\TelegramController::class);
+Route::get('/truncate', function () {
+    DB::statement('TRUNCATE TABLE telegram_group_sessions');
+    DB::statement('TRUNCATE TABLE active_session_questions');
+    dd("done truncating sessions");
+});
 
 Route::get('/handle', [\App\Telegram\TelegramWebHookHandler::class, 'handle']);
 
