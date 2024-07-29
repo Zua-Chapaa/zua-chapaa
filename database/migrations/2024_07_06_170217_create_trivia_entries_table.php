@@ -15,6 +15,10 @@ return new class extends Migration {
             $table->string('poll_id');
             $table->string('question');
             $table->string('question_answer');
+            $table->string('choice_1')->nullable();
+            $table->string('choice_2')->nullable();
+            $table->string('choice_3')->nullable();
+            $table->string('choice_4')->nullable();
             $table->string('answer_user_id')->nullable();
             $table->string('user_answer')->nullable();
             $table->integer('time_to_answer')->nullable();

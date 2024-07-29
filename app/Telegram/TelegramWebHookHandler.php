@@ -3,6 +3,9 @@
 namespace App\Telegram;
 
 use App\Http\Controllers\MpesaController;
+use App\Models\Questions;
+use App\Models\TelegramGroupSession;
+use App\Models\TriviaEntry;
 use App\Telegram\CallBacks\GetChat;
 use App\Telegram\CallBacks\HandleChatMessage;
 use App\Telegram\CallBacks\Home\GroupAnswer;
@@ -74,13 +77,25 @@ class TelegramWebHookHandler extends WebhookHandler
     private function handleQuizResponse(Request $request, TelegraphBot $bot)
     {
         if ($request->has('poll')) {
+            $trivia_entry = new TriviaEntry();
 
+            $trivia_entry->poll_id = $request->input('poll.id');
+            $trivia_entry->question = $request->input('poll.question');
 
-            $poll_id = $request->input('poll.id');
-            $poll_id = $request->input('poll.id');
-            logger();
+            $ans_id = $request->input('poll.correct_option_id');
+            $ans = $request->input('poll.options');
+
+            $trivia_entry->question_answer = $ans[$ans_id]['text'];
+
+            $trivia_entry->session_id = TelegramGroupSession::where('Active', 1)->first()->id;
+
+            $trivia_entry->save();
         } else {
-//            logger($request);
+            $trivia_entry = TriviaEntry::where('poll_id', $request->input('poll_answer.poll_id'));
+            $trivia_entry_question = Questions::where('');
+
+            $trivia_entry->answer_user_id = $request->input('poll_answer.user.id');
+            $trivia_entry->user_answer = $request->input('poll_answer.option_ids');
         }
     }
 
