@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->string('choice_4')->nullable();
             $table->string('answer_user_id')->nullable();
             $table->string('user_answer')->nullable();
+            $table->string('is_user_correct')->default(false);
             $table->integer('time_to_answer')->nullable();
             $table->integer('session_id');
             $table->timestamps();

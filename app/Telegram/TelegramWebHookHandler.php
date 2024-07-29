@@ -3,7 +3,6 @@
 namespace App\Telegram;
 
 use App\Http\Controllers\MpesaController;
-use App\Models\Questions;
 use App\Models\TelegramGroupSession;
 use App\Models\TriviaEntry;
 use App\Telegram\CallBacks\GetChat;
@@ -87,15 +86,35 @@ class TelegramWebHookHandler extends WebhookHandler
 
             $trivia_entry->question_answer = $ans[$ans_id]['text'];
 
+            $trivia_entry->choice_1 = $request->input('poll.options[0].text');
+            $trivia_entry->choice_2 = $request->input('poll.options[1].text');
+            $trivia_entry->choice_3 = $request->input('poll.options[2].text');
+            $trivia_entry->choice_4 = $request->input('poll.options[3].text');
+
             $trivia_entry->session_id = TelegramGroupSession::where('Active', 1)->first()->id;
 
             $trivia_entry->save();
         } else {
             $trivia_entry = TriviaEntry::where('poll_id', $request->input('poll_answer.poll_id'));
-            $trivia_entry_question = Questions::where('');
 
             $trivia_entry->answer_user_id = $request->input('poll_answer.user.id');
-            $trivia_entry->user_answer = $request->input('poll_answer.option_ids');
+
+            $answer_id = $request->input('poll_answer.option_ids[0]');
+
+            $answer_chosen = match ($answer_id) {
+                0 => $trivia_entry->choice_1,
+                1 => $trivia_entry->choice_2,
+                2 => $trivia_entry->choice_3,
+                3 => $trivia_entry->choice_4,
+                default => null, // Optional: handle cases that don't match any of the provided values
+            };
+
+            $trivia_entry->answer_user_id = $answer_chosen;
+            $trivia_entry->time_to_answer = now();
+
+
+
+
         }
     }
 
