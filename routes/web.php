@@ -3,7 +3,6 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\MpesaController;
 use App\Models\TelegramGroupSession;
-use App\Models\TriviaEntry;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -36,24 +35,32 @@ Route::get('/balance/{TelegraphChatID}', function ($TelegraphChatID) {
 });
 
 Route::get('/leaderboard', function () {
-    $trivia = TriviaEntry::all();
-
     $session = TelegramGroupSession::where('active', "<>", true)->orderBy('created_at', 'desc')->first();
 
-    $results = DB::select("
-                SELECT
-                    chats.chat_id,
-                    chats.name,
-                    AVG(te.time_to_answer) as average_time,
-                    SUM(te.is_user_correct) as total
-                FROM trivia_entries te
-                JOIN telegraph_chats chats ON chats.chat_id = te.user_id
-                WHERE te.session_id = $session->id
-                GROUP BY chats.chat_id, chats.name
-                ORDER BY total DESC, average_time
-            ");
+    $results = DB::select("SELECT
+                                        answer_user_id,
+                                        telegraph_chats.name,
+                                        SUM(is_user_correct + 0) AS total_correct,
+                                        AVG(time_to_answer) AS average_timestamp
+                                    FROM
+                                        trivia_entries
+                                    JOIN
+                                        telegraph_chats ON telegraph_chats.chat_id = trivia_entries.answer_user_id
+                                    WHERE
+                                        session_id = ?
+                                    GROUP BY
+                                        answer_user_id, telegraph_chats.name
+                                    ORDER BY
+                                        total_correct DESC, average_timestamp
+                                ", [$session->id]);
 
     $firstThreeResults = collect($results)->take(3);
+
+    $firstThreeResults->map(function ($result) {
+        $result->name = str_replace("[private] ", "", $result->name);
+
+        return $result;
+    });
 
     return Inertia::render('Telegram/Leaderboard', [
         'top' => $firstThreeResults

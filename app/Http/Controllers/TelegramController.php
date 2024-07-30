@@ -96,7 +96,7 @@ class TelegramController extends Controller
 
     public function preLoadQuestions(): void
     {
-        $questions = Questions::inRandomOrder()->limit(40)->get();
+        $questions = Questions::inRandomOrder()->limit(20)->get();
 
         foreach ($questions as $question) {
             ActiveSessionQuestions::create([

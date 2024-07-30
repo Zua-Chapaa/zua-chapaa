@@ -15,6 +15,7 @@ use DefStudio\Telegraph\Handlers\WebhookHandler;
 use DefStudio\Telegraph\Models\TelegraphBot;
 use DefStudio\Telegraph\Models\TelegraphChat;
 use Illuminate\Http\Request;
+use Mockery\Exception;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
@@ -73,49 +74,58 @@ class TelegramWebHookHandler extends WebhookHandler
 
     private function handleQuizResponse(Request $request, TelegraphBot $bot)
     {
-        if ($request->has('poll')) {
-            $trivia_entry = new TriviaEntry();
+        try {
+            if ($request->has('poll')) {
+                $trivia_entry = new TriviaEntry();
 
-            $trivia_entry->poll_id = $request->input('poll.id');
-            $trivia_entry->question = $request->input('poll.question');
+                $trivia_entry->poll_id = $request->input('poll.id');
+                $trivia_entry->question = $request->input('poll.question');
 
-            $ans_id = $request->input('poll.correct_option_id');
-            $ans = $request->input('poll.options');
+                $ans_id = $request->input('poll.correct_option_id');
+                $ans = $request->input('poll.options');
 
-            $trivia_entry->question_answer = $ans[$ans_id]['text'];
-
-
-            $trivia_entry->choice_1 = $request->input('poll.options')[0]['text'];
-            $trivia_entry->choice_2 = $request->input('poll.options')[1]['text'];
-            $trivia_entry->choice_3 = $request->input('poll.options')[2]['text'];
-            $trivia_entry->choice_4 = $request->input('poll.options')[3]['text'];
+                $trivia_entry->question_answer = $ans[$ans_id]['text'];
 
 
-            $trivia_entry->session_id = TelegramGroupSession::where('Active', 1)->first()->id;
-
-            $trivia_entry->save();
-        } else {
-            $trivia_entry = TriviaEntry::where('poll_id', $request->input('poll_answer.poll_id'))->first();
-            $trivia_entry->answer_user_id = $request->input('poll_answer.user.id');
+                $trivia_entry->choice_1 = $request->input('poll.options')[0]['text'];
+                $trivia_entry->choice_2 = $request->input('poll.options')[1]['text'];
+                $trivia_entry->choice_3 = $request->input('poll.options')[2]['text'];
+                $trivia_entry->choice_4 = $request->input('poll.options')[3]['text'];
 
 
-            $answer_id = $request->input('poll_answer.option_ids')[0];
+                $trivia_entry->session_id = TelegramGroupSession::where('Active', 1)->first()->id;
 
-            $answer_chosen = match ($answer_id) {
-                0 => $trivia_entry->choice_1,
-                1 => $trivia_entry->choice_2,
-                2 => $trivia_entry->choice_3,
-                3 => $trivia_entry->choice_4,
-                default => null, // Optional: handle cases that don't match any of the provided values
-            };
+                $trivia_entry->save();
+            } else if ($request->has('poll_answer')) {
+                $trivia_entry = TriviaEntry::where('poll_id', $request->input('poll_answer.poll_id'))
+                    ->where('answer_user_id', null)
+                    ->first();
 
-            $trivia_entry->user_answer = $answer_chosen;
+                if (!is_null($trivia_entry)) {
+                    $trivia_entry->answer_user_id = $request->input('poll_answer.user.id');
 
-            $trivia_entry->time_to_answer = time();
 
-            $trivia_entry->is_user_correct = $trivia_entry->question_answer == $answer_chosen;
+                    $answer_id = $request->input('poll_answer.option_ids')[0];
 
-            $trivia_entry->save();
+                    $answer_chosen = match ($answer_id) {
+                        0 => $trivia_entry->choice_1,
+                        1 => $trivia_entry->choice_2,
+                        2 => $trivia_entry->choice_3,
+                        3 => $trivia_entry->choice_4,
+                        default => null, // Optional: handle cases that don't match any of the provided values
+                    };
+
+                    $trivia_entry->user_answer = $answer_chosen;
+
+                    $trivia_entry->time_to_answer = time();
+
+                    $trivia_entry->is_user_correct = $trivia_entry->question_answer == $answer_chosen;
+
+                    $trivia_entry->save();
+                }
+            }
+        } catch (Exception $exception) {
+
         }
     }
 

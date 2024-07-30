@@ -28,7 +28,7 @@ const props = defineProps(['top'])
                 <img src="/storage/system/icons8-user-50.png">
             </div>
             <p class="text-center my-[5px]">{{ top[0].name }}</p>
-            <p class="text-center my-[5px]">Ksh 500</p>
+            <p class="text-center my-[5px]">Won Ksh 500</p>
         </div>
     </div>
     <ul>
@@ -43,6 +43,7 @@ const props = defineProps(['top'])
                 <div class="score-holder flex justify-between rounded px-[30px] bg-blue-400">
                     <p class="text-white">{{ item.name }}</p>
                     <p class="text-white">{{ item.total }}</p>
+                    <p class="text-white">{{ item.average_timestamp }}</p>
                 </div>
             </div>
         </li>

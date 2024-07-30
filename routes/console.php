@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Schedule;
 //})->purpose('Display an inspiring quote')->hourly();
 
 Schedule::call(function () {
-    for ($i = 0; $i < 6; $i++) {
+    for ($i = 0; $i <= 20; $i++) {
         (new TelegramController)->__invoke();
         sleep(1);
     }
