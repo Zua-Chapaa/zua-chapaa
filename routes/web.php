@@ -76,6 +76,7 @@ Route::get('/Schedule', \App\Http\Controllers\TelegramController::class);
 Route::get('/truncate', function () {
     DB::statement('TRUNCATE TABLE telegram_group_sessions');
     DB::statement('TRUNCATE TABLE active_session_questions');
+    DB::statement('TRUNCATE TABLE trivia_entries');
     dd("done truncating sessions");
 });
 

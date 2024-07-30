@@ -15,7 +15,6 @@ use DefStudio\Telegraph\Handlers\WebhookHandler;
 use DefStudio\Telegraph\Models\TelegraphBot;
 use DefStudio\Telegraph\Models\TelegraphChat;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
@@ -49,8 +48,7 @@ class TelegramWebHookHandler extends WebhookHandler
         if ($request->has('poll') || $request->has('poll_answer')) {
             $this->handleQuizResponse($request, $bot);
         } else {
-            Log::info("passed");
-//            parent::handle($request, $bot);
+            parent::handle($request, $bot);
         }
     }
 
@@ -86,20 +84,22 @@ class TelegramWebHookHandler extends WebhookHandler
 
             $trivia_entry->question_answer = $ans[$ans_id]['text'];
 
-            $trivia_entry->choice_1 = $request->input('poll.options[0].text');
-            $trivia_entry->choice_2 = $request->input('poll.options[1].text');
-            $trivia_entry->choice_3 = $request->input('poll.options[2].text');
-            $trivia_entry->choice_4 = $request->input('poll.options[3].text');
+
+            $trivia_entry->choice_1 = $request->input('poll.options')[0]['text'];
+            $trivia_entry->choice_2 = $request->input('poll.options')[1]['text'];
+            $trivia_entry->choice_3 = $request->input('poll.options')[2]['text'];
+            $trivia_entry->choice_4 = $request->input('poll.options')[3]['text'];
+
 
             $trivia_entry->session_id = TelegramGroupSession::where('Active', 1)->first()->id;
 
             $trivia_entry->save();
         } else {
-            $trivia_entry = TriviaEntry::where('poll_id', $request->input('poll_answer.poll_id'));
-
+            $trivia_entry = TriviaEntry::where('poll_id', $request->input('poll_answer.poll_id'))->first();
             $trivia_entry->answer_user_id = $request->input('poll_answer.user.id');
 
-            $answer_id = $request->input('poll_answer.option_ids[0]');
+
+            $answer_id = $request->input('poll_answer.option_ids')[0];
 
             $answer_chosen = match ($answer_id) {
                 0 => $trivia_entry->choice_1,
@@ -109,12 +109,13 @@ class TelegramWebHookHandler extends WebhookHandler
                 default => null, // Optional: handle cases that don't match any of the provided values
             };
 
-            $trivia_entry->answer_user_id = $answer_chosen;
-            $trivia_entry->time_to_answer = now();
+            $trivia_entry->user_answer = $answer_chosen;
 
+            $trivia_entry->time_to_answer = time();
 
+            $trivia_entry->is_user_correct = $trivia_entry->question_answer == $answer_chosen;
 
-
+            $trivia_entry->save();
         }
     }
 
