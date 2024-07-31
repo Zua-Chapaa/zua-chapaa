@@ -73,8 +73,7 @@ trait Home
 
     public function start_trivia(): void
     {
-        logger($this->chat->user);
-//        $this->msg("https://t.me/+EZAMREqY0QA1Y2Rk");
+        $this->msg("https://t.me/+EZAMREqY0QA1Y2Rk");
     }
 
 }

@@ -104,6 +104,24 @@ class TelegramWebHookHandler extends WebhookHandler
                 if (!is_null($trivia_entry)) {
                     $trivia_entry->answer_user_id = $request->input('poll_answer.user.id');
 
+                    function setUsername($request)
+                    {
+                        if ($request->input('poll_answer.user')['username']) {
+                            return $request->input('poll_answer.user')['username'];
+                        } else {
+                            return $request->input('poll_answer.user')['first_name'] . " " . $request->input('poll_answer.user')['last_name'];
+                        }
+                    }
+
+                    $user_name = setUsername($request);
+
+
+                    $telegram_chat = TelegraphChat::where('chat_id', $request->input('poll_answer.user.id'))->first();
+                    $telegram_chat->name = $user_name;
+                    $telegram_chat->save();
+
+                    logger($telegram_chat->name);
+
 
                     $answer_id = $request->input('poll_answer.option_ids')[0];
 
@@ -162,7 +180,6 @@ class TelegramWebHookHandler extends WebhookHandler
 
         $this->reply('Option not available');
     }
-
 
 }
 
