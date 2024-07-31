@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
+use Random\RandomException;
 
 class AccountController extends Controller
 {
@@ -16,13 +17,23 @@ class AccountController extends Controller
     public function account(TelegraphChat $TelegraphChatID): \Inertia\Response
     {
         $this->chat = $TelegraphChatID;
+        $user = User::where('telegram_id', $this->chat->id)->first();
 
-        $name = $this->chat->name;
-        $username = str_replace(["[private] ", "[public] "], "", $name);
+        if (is_null($user->password)) {
+            $code = $this->generate_code();
 
-        return Inertia::render('Telegram/Account/Account', [
-            'username' => $username,
-        ]);
+//            $this->chat->message("Code:")
+            return Inertia::render('Telegram/Account/Account', [
+                'username' => $username,
+            ]);
+        } else {
+            $name = $this->chat->name;
+            $username = str_replace(["[private] ", "[public] "], "", $name);
+
+            return Inertia::render('Telegram/Account/Account', [
+                'username' => $username,
+            ]);
+        }
     }
 
     public function register_administrator(Request $request)
@@ -91,5 +102,13 @@ class AccountController extends Controller
         }
 
         return $input;
+    }
+
+    /**
+     * @throws RandomException
+     */
+    private function generate_code(): int
+    {
+        return random_int(100000, 999999);
     }
 }
