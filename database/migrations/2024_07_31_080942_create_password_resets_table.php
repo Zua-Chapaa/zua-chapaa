@@ -12,6 +12,9 @@ return new class extends Migration {
     {
         Schema::create('password_resets', function (Blueprint $table) {
             $table->id();
+            $table->unsignedInteger('userId');
+            $table->string('code');
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }
