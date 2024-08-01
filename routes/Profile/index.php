@@ -1,9 +1,13 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Validator;
+use Inertia\Inertia;
 
 Route::post('/setupAccount', function (Request $request) {
     // Define the validation rules
@@ -45,3 +49,51 @@ Route::post('/setupAccount', function (Request $request) {
 
     return response()->json(['message' => 'Password updated successfully.']);
 })->name('setupAccount');
+
+
+Route::post('/authorizeUser', function (Request $request) {
+    // Define the validation rules
+    $validator = Validator::make($request->all(), [
+        'user' => 'required|int|exists:users,id',
+        'password' => 'required|string',
+    ]);
+
+    // Check if validation fails
+    if ($validator->fails()) {
+        return response()->json([
+            'errors' => $validator->errors()
+        ], 422);
+    }
+
+    // Retrieve the user based on the provided ID
+    $user = User::find($request->input('user'));
+
+    // Compare the provided password with the stored password
+    if (Hash::check($request->input('password'), $user->password)) {
+// Passwords match, create a token for the user
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        // Manually log in the user
+        Auth::login($user);
+
+        return response()->json([
+            'message' => 'User authorized successfully.',
+            'user' => $user,
+            'token' => $token
+        ], 200);
+
+    } else {
+        // Passwords do not match
+        return response()->json([
+            'errors' => ['password' => ['The provided password is incorrect.']]
+        ], 401);
+    }
+})
+    ->name('authorizeUser');
+
+
+Route::get('/profile', function (Request $request) {
+    return Inertia::render('Telegram/Account/Account');
+})
+    ->middleware(['auth:sanctum'])
+    ->name('profile');

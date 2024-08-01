@@ -48,12 +48,13 @@ class AccountController extends Controller
             return Inertia::render('Telegram/Account/AccountSetup', [
                 "user" => $user->id,
             ]);
+
         } else {
-            $name = $this->chat->name;
-            $username = str_replace(["[private] ", "[public] "], "", $name);
+//            $name = $this->chat->name;
+//            $username = str_replace(["[private] ", "[public] "], "", $name);
 
             return Inertia::render('Telegram/Account/AccountAccess', [
-                'username' => $username,
+                'user' => $user,
             ]);
         }
     }

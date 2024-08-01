@@ -1,10 +1,35 @@
 <script setup>
-import {Head} from '@inertiajs/vue3';
+import {Head, useForm} from '@inertiajs/vue3';
 import TextInput from "@/Components/TextInput.vue";
+import {ref} from "vue";
 
-console.log("hi")
+const props = defineProps(['user'])
 
-///test
+const accountForm = useForm({
+    user: props.user.id,
+    password: "pass",
+})
+
+const errors = ref({});
+
+function authorize() {
+    errors.value = {}
+    axios.post(route('authorizeUser'), accountForm)
+        .then(res => {
+            window.location.href = route('profile');
+        })
+        .catch(err => {
+            switch (err.response.status) {
+                case 422:
+                case 401:
+                    errors.value = (err.response.data.errors)
+                    break;
+                default:
+                    break
+            }
+        })
+}
+
 </script>
 
 <template>
@@ -12,33 +37,20 @@ console.log("hi")
     <nav
         class="text-white bg-gray-800 py-[10px] px-[10px] mb-[10px] flex items-center justify-content-between shadow-lg">
         <img style="height: 45px" src="/storage/system/logo.png" alt="Logo">
-        <!--        <button type="button">-->
-        <!--            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"-->
-        <!--                 class="bi bi-three-dots-vertical" viewBox="0 0 16 16">-->
-        <!--                <path-->
-        <!--                    d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>-->
-        <!--            </svg>-->
-        <!--        </button>-->
     </nav>
-    <h1 class="px-[10px] text-[30px] text-white mb-[10px]">Account:</h1>
-    <form class="mx-[10px] ">
+    <h1 class="px-[10px] text-[30px] text-white mb-[10px]">Authorize:</h1>
+    <form @submit.prevent=authorize class="mx-[10px] ">
+        <ul class="pb-[20px]">
+            <li v-for="item in errors" class="px-[20px] text-sm alert-danger rounded-sm mb-[2px]">{{ item[0] }}</li>
+        </ul>
         <ul>
             <li style="background-color: rgba(125,178,243,0.27)" class="p-[10px] rounded mb-[5px] ">
-                <label class="block text-sm text-white mb-[5px]">Username</label>
-                <TextInput type="text" class="w-full p-[5px]"></TextInput>
-            </li>
-            <li style="background-color: rgba(125,178,243,0.27)" class="p-[10px] rounded mb-[5px] ">
-                <label class="block text-sm text-white mb-[5px]">Email</label>
-                <TextInput type="text" class="w-full p-[5px]"></TextInput>
-            </li>
-            <li style="background-color: rgba(125,178,243,0.27)" class="p-[10px] rounded mb-[5px] ">
-                <label class="block text-sm text-white mb-[5px]">Phone Number</label>
-                <TextInput type="text" class="w-full p-[5px]"></TextInput>
+                <label class="block text-sm text-white mb-[5px]">Password</label>
+                <TextInput type="password" class="w-full p-[5px]" v-model="accountForm.password"></TextInput>
             </li>
         </ul>
         <div class="flex gap-2">
-            <button class="btn-primary btn w-full">Update</button>
-            <button class="btn-danger btn w-full">Cancel</button>
+            <button type="submit" class="btn-primary btn w-full">Submit</button>
         </div>
     </form>
 </template>
