@@ -7,9 +7,9 @@ const props = defineProps(['user'])
 
 const accountForm = useForm({
     user: props.user,
-    code: "800517",
-    password: "password",
-    password_confirmation: "password"
+    code: "",
+    password: "",
+    password_confirmation: ""
 })
 
 const errors = ref({});
@@ -18,10 +18,13 @@ function setupAccount() {
     errors.value = {}
     axios.post(route('setupAccount'), accountForm)
         .then(res => {
-            window.location.href = window.location.href
-        })
-        .catch(err => {
+            window.location.href = route('account', [props.user.id])
+        }).catch(err => {
+        console.log()
             switch (err.response.status) {
+                case 200:
+                    window.location.href = route('account', [props.user.id])
+                    break;
                 case 422:
                     errors.value = (err.response.data.errors)
                     break;

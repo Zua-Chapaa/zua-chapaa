@@ -47,7 +47,7 @@ Route::post('/setupAccount', function (Request $request) {
     // Delete the password reset record
     DB::table('password_resets')->where('userid', $request->input('user'))->delete();
 
-    return response()->json(['message' => 'Password updated successfully.']);
+    return response()->json(['message' => 'Password updated successfully.'], 200);
 })->name('setupAccount');
 
 
