@@ -90,3 +90,6 @@ Route::get('/truncate', function () {
 Route::get('/handle', [\App\Telegram\TelegramWebHookHandler::class, 'handle']);
 
 include_once "Admin/admin.php";
+include_once "Profile/index.php";
+
+

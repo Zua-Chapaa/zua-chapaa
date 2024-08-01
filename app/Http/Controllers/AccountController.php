@@ -6,6 +6,7 @@ use App\Models\User;
 use DefStudio\Telegraph\Models\TelegraphChat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Random\RandomException;
@@ -20,11 +21,32 @@ class AccountController extends Controller
         $user = User::where('telegram_id', $this->chat->id)->first();
 
         if (is_null($user->password)) {
+            $password_reset = DB::table('password_resets')->where('userid', $user->id)->first();
             $code = $this->generate_code();
 
-//            $this->chat->message("Code:")
-            return Inertia::render('Telegram/Account/Account', [
-                'username' => $username,
+            if (is_null($password_reset)) {
+
+                DB::table('password_resets')->insert([
+                    'userid' => $user->id,
+                    'code' => $code,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+
+            } else {
+                DB::table('password_resets')
+                    ->where('userId', $user->id)
+                    ->update([
+                        'code' => $code,
+                        'updated_at' => now()
+                    ]);
+            }
+
+            $this->chat->message("Code:" . $code)->send();
+
+
+            return Inertia::render('Telegram/Account/AccountSetup', [
+                "user" => $user->id,
             ]);
         } else {
             $name = $this->chat->name;
