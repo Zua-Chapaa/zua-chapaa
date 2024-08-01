@@ -52,7 +52,7 @@ class AccountController extends Controller
             $name = $this->chat->name;
             $username = str_replace(["[private] ", "[public] "], "", $name);
 
-            return Inertia::render('Telegram/Account/Account', [
+            return Inertia::render('Telegram/Account/AccountAccess', [
                 'username' => $username,
             ]);
         }
