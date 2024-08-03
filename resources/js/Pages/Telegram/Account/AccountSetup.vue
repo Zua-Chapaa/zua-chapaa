@@ -18,13 +18,10 @@ function setupAccount() {
     errors.value = {}
     axios.post(route('setupAccount'), accountForm)
         .then(res => {
-            window.location.href = route('account', [props.user.id])
+            window.location.reload()
         }).catch(err => {
-        console.log()
+        console.log(err)
             switch (err.response.status) {
-                case 200:
-                    window.location.href = route('account', [props.user.id])
-                    break;
                 case 422:
                     errors.value = (err.response.data.errors)
                     break;

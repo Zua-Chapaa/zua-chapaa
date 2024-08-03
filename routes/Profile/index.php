@@ -47,7 +47,7 @@ Route::post('/setupAccount', function (Request $request) {
     // Delete the password reset record
     DB::table('password_resets')->where('userid', $request->input('user'))->delete();
 
-    return response()->json(['message' => 'Password updated successfully.'], 200);
+    return redirect(route('account', ['TelegraphChatID' => $user->telegram_id]));
 })->name('setupAccount');
 
 
@@ -93,7 +93,11 @@ Route::post('/authorizeUser', function (Request $request) {
 
 
 Route::get('/profile', function (Request $request) {
-    return Inertia::render('Telegram/Account/Account');
+    $user = Auth::user();
+
+    return Inertia::render('Telegram/Account/Account', [
+        'user' => $user
+    ]);
 })
     ->middleware(['auth:sanctum'])
     ->name('profile');

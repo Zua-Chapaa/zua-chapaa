@@ -7,7 +7,7 @@ const props = defineProps(['user'])
 
 const accountForm = useForm({
     user: props.user.id,
-    password: "pass",
+    password: "",
 })
 
 const errors = ref({});

@@ -30,6 +30,9 @@ class MpesaController extends Controller
 //        decode response
         $response_parsed = json_decode($response);
 
+        logger(json_encode($response_parsed));
+        die();
+
         //make an order matching request
         $user = User::where('telegram_id', $chat->id)->first();
         $order = new Order();
@@ -121,6 +124,9 @@ class MpesaController extends Controller
 
     public function mpesa_callback(Request $request, $chat): void
     {
+        logger("here");
+        die();
+
         $orders = Order::where('status', 'pending')->get();
 
         if (count($orders) > 0) {

@@ -10,8 +10,19 @@ import {Head} from '@inertiajs/vue3';
     </nav>
     <h1 class="px-[10px] text-[30px] text-white mb-[10px]">Balance:</h1>
     <div class="text-white rounded-lg p-[5px] mx-[10px] mb-[5px]" style="background-color: rgba(125,178,243,0.27)">
-        <h2 class="text-white text-[20px] mb-[20px]">Total Balance:</h2>
-        <p class="text-white text-right text-[30px] font-bold ">Ksh 4,000</p>
+        <div class="flex justify-between">
+            <h2 class="text-white text-[20px] mb-[10px]">Balance:</h2>
+            <p class="text-white text-right text-[25px] font-bold mb-[20px]">Ksh 4,000</p>
+        </div>
+        <hr class="mb-[10px]">
+        <div>
+            <label class="text-sm">Amount</label>
+            <input type="number" class="rounded p-[5px] mb-[15px] w-full" placeholder="Amount">
+            <label class="text-sm">Phone Number</label>
+            <input type="text" class="rounded p-[5px] mb-[15px] w-full" placeholder="Phone Number">
+            <label class="text-sm">Password</label>
+            <input type="password" class="rounded p-[5px] mb-[15px] w-full" placeholder="Password">
+        </div>
     </div>
     <div class="text-white rounded-lg  mx-[10px] mb-[30px]">
         <button type="button" class="block w-full rounded bg-blue-400 py-[6px]">Withdraw</button>
